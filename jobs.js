@@ -12,13 +12,13 @@ function render(){
  let action='';
  if(d.delivery_status==='ready_for_pickup')action='<button class="primary" data-pick="'+d.delivery_id+'">Nimethibitisha kupokea mzigo</button>';
  if(d.delivery_status==='picked_up')action='<button class="primary" data-transit="'+d.delivery_id+'">Anza safari</button>';
- if(d.delivery_status==='in_transit')action='<button class="primary" data-delivered="'+d.delivery_id+'">Nimemfikishia mnunuzi</button>';
+ if(d.delivery_status==='in_transit')action='<button class="primary" data-delivered="'+d.delivery_id+'">Nimemfikishia mnunuzi</button><button class="ghost" data-gps="'+d.delivery_id+'">Shiriki eneo langu la GPS</button>';
  const map=d.latitude&&d.longitude?'<a class="ghost" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat='+d.latitude+'&mlon='+d.longitude+'#map=17/'+d.latitude+'/'+d.longitude+'">Fungua eneo la mnunuzi</a>':'';
  return '<article class="application-card"><div class="row-between"><strong>Oda #'+esc(d.delivery_id.slice(0,8).toUpperCase())+'</strong><span class="pill">'+esc(labels[d.delivery_status]||d.delivery_status)+'</span></div><p><b>Mpokeaji:</b> '+esc(d.recipient_name)+' · '+esc(d.recipient_phone)+'</p><p><b>Anwani:</b> '+esc([d.delivery_address,d.region,d.district].filter(Boolean).join(', '))+'</p><p><b>Delivery:</b> TSh '+Number(d.delivery_fee||0).toLocaleString('en-US')+'</p><div class="application-actions">'+action+' '+map+'</div></article>';
  }).join('');
  root.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_pickup',{p_delivery_id:b.dataset.pick,p_note:'Dereva amethibitisha kupokea mzigo.'},'Umethibitisha kupokea mzigo.'));
  root.querySelectorAll('[data-transit]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_in_transit',{p_delivery_id:b.dataset.transit},'Safari imeanza.'));
- root.querySelectorAll('[data-delivered]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_delivered',{p_delivery_id:b.dataset.delivered,p_note:'Dereva amethibitisha kufikisha mzigo.'},'Umeweka mzigo kuwa umefikishwa. Mnunuzi sasa athibitishe kupokea.'));
+ root.querySelectorAll('[data-delivered]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_delivered',{p_delivery_id:b.dataset.delivered,p_note:'Dereva amethibitisha kufikisha mzigo.'},'Umeweka mzigo kuwa umefikishwa. Mnunuzi sasa athibitishe kupokea.'));\n root.querySelectorAll('[data-gps]').forEach(b=>b.onclick=()=>{if(!navigator.geolocation){msg('Kifaa hiki hakina GPS inayopatikana.',true);return;}b.disabled=true;navigator.geolocation.getCurrentPosition(async pos=>{const {error}=await db.rpc('zune_delivery_update_location',{p_delivery_id:b.dataset.gps,p_latitude:pos.coords.latitude,p_longitude:pos.coords.longitude});if(error)msg(error.message,true);else msg('Eneo lako la safari limesasishwa kwa mnunuzi.');b.disabled=false;},err=>{msg('Imeshindikana kupata eneo: '+err.message,true);b.disabled=false;},{enableHighAccuracy:true,timeout:15000,maximumAge:5000});});
 }
 async function load(){
  const {data:{user},error:authError}=await db.auth.getUser();if(authError)throw authError;
