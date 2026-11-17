@@ -3,6 +3,7 @@ const SUPABASE_URL='https://rpkogiieegqgxqbzwxwo.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_2TEqZv-NBM9n5knU46ngqA_wqO3V1uf';
 const db=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 const $=s=>document.querySelector(s);let mode='login',user=null,lang='sw';
+const welcomeScreen=$('#welcomeScreen');$('#startDelivery')?.addEventListener('click',()=>{welcomeScreen?.classList.add('leaving');setTimeout(()=>welcomeScreen?.remove(),500)});
 const copy={sw:{login:'Ingia',register:'Jisajili',welcome:'Karibu ZUNE Delivery',intro:'Ingia au fungua akaunti ya dereva.',submitLogin:'Ingia',submitRegister:'Fungua akaunti',logout:'Toka'},en:{login:'Log in',register:'Register',welcome:'Welcome to ZUNE Delivery',intro:'Sign in or create a driver account.',submitLogin:'Log in',submitRegister:'Create account',logout:'Log out'}};
 function notice(message,error=false){const n=$('#notice');n.textContent=message;n.classList.remove('hidden','error');if(error)n.classList.add('error')}
 function setMode(next){mode=next;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));$('#registerFields').classList.toggle('hidden',mode!=='register');$('#authTitle').textContent=copy[lang][mode==='login'?'welcome':'register'];$('#authIntro').textContent=copy[lang].intro;$('#authSubmit').textContent=copy[lang][mode==='login'?'submitLogin':'submitRegister'];$('#authForm').querySelector('[name=password]').autocomplete=mode==='login'?'current-password':'new-password'}
