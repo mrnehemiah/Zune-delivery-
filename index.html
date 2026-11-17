@@ -9,4 +9,24 @@
 <aside class="side-note"><span class="pill">USALAMA KWANZA</span><h3>Usajili wa njia mbili</h3><p>Dereva anaweza kuomba kujiunga mwenyewe au kutumia mwaliko rasmi wa Admin.</p><ol><li>Jaza taarifa zako</li><li>Thibitisha barua pepe ikiwa itaombwa</li><li>Subiri ukaguzi wa Admin</li><li>Baada ya idhini, anza kupokea kazi</li></ol><p class="tiny">Akaunti haitapokea oda kabla ya kuidhinishwa.</p></aside></section>
 <section id="dashboardView" class="hidden"><div class="panel"><div class="row-between"><div><p class="eyebrow">DASHBOARD</p><h2 id="welcomeTitle">Akaunti ya dereva</h2></div><span id="statusPill" class="pill">Inasubiri</span></div><div id="driverSummary" class="summary-grid"></div><div id="driverMessage" class="notice"></div></div>
 <section id="adminPanel" class="panel hidden"><h2>Usimamizi wa madereva</h2><p class="muted">Sehemu ya Admin kutengeneza mialiko. Ukaguzi wa maombi utaongezwa kwenye Admin Dashboard.</p><form id="inviteForm" class="form compact"><label>Barua pepe ya dereva (hiari)<input name="email" type="email"></label><label>Simu ya dereva (hiari)<input name="phone" type="tel"></label><label>Muda wa mwaliko<select name="days"><option value="1">Siku 1</option><option value="3" selected>Siku 3</option><option value="7">Siku 7</option><option value="14">Siku 14</option></select></label><button class="primary">Tengeneza mwaliko</button></form><div id="inviteResult" class="invite-result hidden"></div><hr><h3>Maombi ya madereva</h3><button id="refreshApplications" class="ghost">Onyesha upya</button><div id="applicationList">Inapakia...</div></section></section>
-<footer><span>© ZUNE Delivery</span><span>HTML · CSS · JavaScript · Supabase</span></footer></main><script type="module" src="./app.js"></script></body></html>
+<footer><span>© ZUNE Delivery</span><span>HTML · CSS · JavaScript · Supabase</span></footer></main><script>
+/* Keep login/register tabs responsive even if the remote Supabase module is slow. */
+(function(){
+  const tabs=document.querySelectorAll('.tab');
+  const fields=document.getElementById('registerFields');
+  const title=document.getElementById('authTitle');
+  const submit=document.getElementById('authSubmit');
+  const password=document.querySelector('#authForm [name="password"]');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click',function(){
+      const registering=tab.dataset.mode==='register';
+      tabs.forEach(function(item){item.classList.toggle('active',item===tab)});
+      fields.classList.toggle('hidden',!registering);
+      title.textContent=registering?'Jisajili ZUNE Delivery':'Karibu ZUNE Delivery';
+      submit.textContent=registering?'Fungua akaunti':'Ingia';
+      if(password)password.autocomplete=registering?'new-password':'current-password';
+    });
+  });
+})();
+</script>
+<script type="module" src="./app.js"></script></body></html>
