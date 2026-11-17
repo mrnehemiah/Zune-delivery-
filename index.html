@@ -12,6 +12,9 @@
 <footer><span>© ZUNE Delivery</span><span>HTML · CSS · JavaScript · Supabase</span></footer></main><script>
 /* Keep login/register tabs responsive even if the remote Supabase module is slow. */
 (function(){
+  const splash=document.getElementById('welcomeScreen');
+  const start=document.getElementById('startDelivery');
+  if(start) start.addEventListener('click',function(){if(splash){splash.classList.add('leaving');window.setTimeout(function(){splash.remove()},500)}});
   const tabs=document.querySelectorAll('.tab');
   const fields=document.getElementById('registerFields');
   const title=document.getElementById('authTitle');
