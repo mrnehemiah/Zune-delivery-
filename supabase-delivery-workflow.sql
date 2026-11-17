@@ -219,7 +219,7 @@ $function$
 
 
 CREATE OR REPLACE FUNCTION public.zune_delivery_seller_queue()
- RETURNS TABLE(delivery_id uuid, checkout_id uuid, vendor_id uuid, delivery_fee numeric, currency text, delivery_status text, assigned_driver_id uuid, seller_handover_confirmed_at timestamp with time zone, driver_pickup_confirmed_at timestamp with time zone, driver_delivered_at timestamp with time zone, buyer_confirmed_at timestamp with time zone, recipient_name text, recipient_phone text, delivery_address text, region text, district text, latitude double precision, longitude double precision, created_at timestamp with time zone)
+ RETURNS TABLE(delivery_id uuid, checkout_id uuid, vendor_id uuid, delivery_fee numeric, currency text, delivery_status text, assigned_driver_id uuid, seller_handover_confirmed_at timestamp with time zone, driver_pickup_confirmed_at timestamp with time zone, driver_delivered_at timestamp with time zone, buyer_confirmed_at timestamp with time zone, payout_status text, recipient_name text, recipient_phone text, delivery_address text, region text, district text, latitude double precision, longitude double precision, created_at timestamp with time zone)
  LANGUAGE plpgsql
  SECURITY DEFINER
  SET search_path TO ''
@@ -227,18 +227,16 @@ AS $function$
 begin
  if auth.uid() is null then raise exception 'Tafadhali ingia kwanza.'; end if;
  if not public.zune_is_admin() and not exists(select 1 from public.products p where p.vendor_id=auth.uid()) then
-   raise exception 'Akaunti hii haina duka linaloweza kusimamia delivery.';
+  raise exception 'Akaunti hii haina duka linaloweza kusimamia delivery.';
  end if;
  return query
  select d.id,d.checkout_id,d.vendor_id,d.delivery_fee,d.currency,d.status,d.assigned_driver_id,
  d.seller_handover_confirmed_at,d.driver_pickup_confirmed_at,d.driver_delivered_at,d.buyer_confirmed_at,
- c.recipient_name,c.recipient_phone,c.delivery_address,c.region,c.district,c.latitude,c.longitude,d.created_at
- from public.order_deliveries d
- join public.order_checkouts c on c.id=d.checkout_id
+ d.payout_status,c.recipient_name,c.recipient_phone,c.delivery_address,c.region,c.district,c.latitude,c.longitude,d.created_at
+ from public.order_deliveries d join public.order_checkouts c on c.id=d.checkout_id
  where public.zune_is_admin() or d.vendor_id=auth.uid()
  order by d.created_at desc;
-end;
-$function$
+end; $function$
 
 
 CREATE OR REPLACE FUNCTION public.zune_delivery_update_location(p_delivery_id uuid, p_latitude double precision, p_longitude double precision)
