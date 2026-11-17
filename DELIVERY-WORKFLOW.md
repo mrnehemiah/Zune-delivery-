@@ -14,5 +14,12 @@ Project: `rpkogiieegqgxqbzwxwo`
 Existing `order_deliveries` rows are extended with driver assignment, confirmation timestamps, GPS fields and payout state. `zune_delivery_events` stores an append-only timeline. RPCs enforce the actor at each step and RLS limits event reads to the buyer, seller, assigned driver and Admin.
 
 ## Pages
-- `index.html`: driver sign-in and application
-- `jobs.html`: assigned jobs and driver confirmations
+- `index.html`: welcome and driver dashboard
+- `login.html` / `login.js`: dedicated driver sign-in
+- `signup.html` / `signup.js`: dedicated driver registration and application submission
+- `forgot-password.html` / `forgot-password.js`: request password recovery
+- `reset-password.html` / `reset-password.js`: set a new password after the recovery link
+- `auth-shared.js`: shared Supabase client and driver-application bootstrap
+- `jobs.html` / `jobs.js`: assigned jobs, pickup/transit/delivery confirmations, GPS sharing, refresh and sign-out
+
+Driver accounts are created with Supabase Auth. After email confirmation (if enabled), the driver signs in; the portal creates the pending driver profile/application under the signed-in identity. Admin approval is required before the driver queue RPC returns assignments.
