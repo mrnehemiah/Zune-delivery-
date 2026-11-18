@@ -1,5 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
-const db=createClient('https://rpkogiieegqgxqbzwxwo.supabase.co','sb_publishable_2TEqZv-NBM9n5knU46ngqA_wqO3V1uf');
+const db=createClient('https://rpkogiieegqgxqbzwxwo.supabase.co','sb_publishable_2TEqZv-NBM9n5knU46ngqA_wqO3V1uf',{auth:{storageKey:'zune-delivery-driver-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const root=document.querySelector('#driverJobs'),notice=document.querySelector('#jobsNotice');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const labels={assigned:'Dereva amechaguliwa',ready_for_pickup:'Subiri uthibitisho wa muuzaji',picked_up:'Umepokea mzigo',in_transit:'Uko njiani',delivered:'Umefikisha · subiri mnunuzi',completed:'Imekamilika'};
@@ -26,4 +26,6 @@ async function load(){
  if(!user){root.innerHTML='<h2>Ingia kwanza</h2><p class="muted">Ingia kwenye akaunti yako ya dereva ili kuona oda ulizopangiwa.</p><a class="primary" href="./login.html">Fungua ukurasa wa kuingia</a>';return;}
  const {data,error}=await db.rpc('zune_delivery_driver_queue');if(error)throw error;rows=data||[];render();
 }
-document.querySelector('#refreshJobs')?.addEventListener('click',async()=>{const b=document.querySelector('#refreshJobs');b.disabled=true;b.textContent='Inapakia...';try{await load()}catch(e){msg(e.message,true)}finally{b.disabled=false;b.textContent='Onyesha upya oda'}});\ndocument.querySelector('#logoutJobs')?.addEventListener('click',async()=>{const {error}=await db.auth.signOut();if(error){msg(error.message,true);return}window.location.href='./login.html'});\nload().catch(e=>{root.innerHTML='<h2>Imeshindikana kupakia oda</h2><p class="muted">'+esc(e.message)+'</p><a class="primary" href="./login.html">Rudi kuingia</a>';});
+document.querySelector('#refreshJobs')?.addEventListener('click',async()=>{const b=document.querySelector('#refreshJobs');b.disabled=true;b.textContent='Inapakia...';try{await load()}catch(e){msg(e.message,true)}finally{b.disabled=false;b.textContent='Onyesha upya oda'}});
+document.querySelector('#logoutJobs')?.addEventListener('click',async()=>{const {error}=await db.auth.signOut();if(error){msg(error.message,true);return}window.location.href='./login.html'});
+load().catch(e=>{root.innerHTML='<h2>Imeshindikana kupakia oda</h2><p class="muted">'+esc(e.message)+'</p><a class="primary" href="./login.html">Rudi kuingia</a>';});
