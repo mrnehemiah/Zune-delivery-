@@ -1,5 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
-const db=createClient('https://rpkogiieegqgxqbzwxwo.supabase.co','sb_publishable_2TEqZv-NBM9n5knU46ngqA_wqO3V1uf');
+const db=createClient('https://rpkogiieegqgxqbzwxwo.supabase.co','sb_publishable_2TEqZv-NBM9n5knU46ngqA_wqO3V1uf',{auth:{storageKey:'zune-delivery-driver-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const root=document.querySelector('#driverJobs'),notice=document.querySelector('#jobsNotice');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const labels={assigned:'Dereva amechaguliwa',ready_for_pickup:'Subiri uthibitisho wa muuzaji',picked_up:'Umepokea mzigo',in_transit:'Uko njiani',delivered:'Umefikisha · subiri mnunuzi',completed:'Imekamilika'};
