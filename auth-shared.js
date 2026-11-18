@@ -1,5 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.119.0';
-export const db=createClient('https://rpkogiieegqgxqbzwxwo.supabase.co','sb_publishable_2TEqZv-NBM9n5knU46ngqA_wqO3V1uf');
+export const db=createClient('https://rpkogiieegqgxqbzwxwo.supabase.co','sb_publishable_2TEqZv-NBM9n5knU46ngqA_wqO3V1uf',{auth:{storageKey:'zune-delivery-driver-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 export const $=s=>document.querySelector(s);
 export function showMessage(message,isError=false){const el=$('#authMessage');if(!el)return;el.textContent=message;el.classList.remove('hidden','error');if(isError)el.classList.add('error');}
 export async function completeDriverSetup(user){
