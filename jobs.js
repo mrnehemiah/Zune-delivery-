@@ -3,7 +3,7 @@ const db=createClient('https://rpkogiieegqgxqbzwxwo.supabase.co','sb_publishable
 const root=document.querySelector('#driverJobs'),notice=document.querySelector('#jobsNotice');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const labels={assigned:'Dereva amechaguliwa',ready_for_pickup:'Subiri uthibitisho wa muuzaji',picked_up:'Umepokea mzigo',in_transit:'Uko njiani',delivered:'Umefikisha · subiri mnunuzi',completed:'Imekamilika'};
-let rows=[];let realtimeChannel=null;let currentDriverId=null;let refreshTimer=null;let realtimeChannel=null;let currentDriverId=null;let refreshTimer=null;
+let rows=[];let realtimeChannel=null;let currentDriverId=null;let refreshTimer=null;
 function msg(s,err=false){notice.textContent=s;notice.classList.remove('hidden');notice.classList.toggle('error',err)}
 async function act(fn,args,success){const {error}=await db.rpc(fn,args);if(error){msg(error.message,true);return;}msg(success);await load();}
 function render(){
@@ -33,14 +33,7 @@ async function load(){
      .subscribe();
  }
  if(!refreshTimer) refreshTimer=window.setInterval(()=>{if(document.visibilityState==='visible')load().catch(e=>msg(e.message,true));},20000);
- if(currentDriverId!==user.id){
-   currentDriverId=user.id;
-   if(realtimeChannel) await db.removeChannel(realtimeChannel);
-   realtimeChannel=db.channel('zune-driver-deliveries-'+user.id)
-     .on('postgres_changes',{event:'*',schema:'public',table:'order_deliveries',filter:'assigned_driver_id=eq.'+user.id},()=>load().catch(e=>msg(e.message,true)))
-     .subscribe();
- }
- if(!refreshTimer) refreshTimer=window.setInterval(()=>{if(document.visibilityState==='visible')load().catch(e=>msg(e.message,true));},20000);
+
 }
 document.querySelector('#refreshJobs')?.addEventListener('click',async()=>{const b=document.querySelector('#refreshJobs');b.disabled=true;b.textContent='Inapakia...';try{await load()}catch(e){msg(e.message,true)}finally{b.disabled=false;b.textContent='Onyesha upya oda'}});
 document.querySelector('#logoutJobs')?.addEventListener('click',async()=>{const {error}=await db.auth.signOut();if(error){msg(error.message,true);return}window.location.href='./login.html'});
