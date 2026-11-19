@@ -39,3 +39,14 @@ The private `zune-driver-documents` bucket stores national ID, driver portrait, 
 
 ## Current validation status
 The dashboard and buyer tracking UI plus the buyer-scoped tracking RPC have been committed. The live end-to-end order lifecycle still requires a real test order: the current database contains 1 driver profile, 1 driver application, 0 driver documents and 0 delivery rows. Do not treat this as a completed production test until a real order has been assigned, handed over, tracked, delivered and buyer-confirmed.
+
+
+## Driver eligibility and Admin controls (latest)
+- The database migration `supabase-driver-eligibility-and-admin-controls.sql` is applied to the shared Supabase project.
+- Seller/Admin driver lists now return only active drivers with all five required documents approved and not expired.
+- Driver assignment independently checks the same five documents, so a direct RPC call cannot bypass document review.
+- Admin suspend/restore is available through `zune_admin_set_delivery_driver_status(p_driver_user_id, p_status, p_reason)`. It is Admin-only, requires a reason, blocks restoration when a required document is missing/expired, and writes `delivery_driver_audit_logs`.
+- The helper `zune_delivery_driver_has_required_documents(p_driver_id)` is internal and not executable by browser roles.
+
+## Production test still required
+The shared database currently reports one driver profile/application but no uploaded driver documents and no delivery rows (see the database validation before release). Therefore no driver currently qualifies for assignment, and a real assignment-to-buyer-receipt test cannot yet be completed. Upload and approve the five documents, then create a test delivery and verify seller assignment, handover, driver pickup, GPS updates, delivered status, and buyer receipt confirmation. GitHub Pages deployment and the separate Admin UI wiring for suspend/restore must also be checked before calling the whole service production-ready.
