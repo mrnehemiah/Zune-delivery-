@@ -11,7 +11,7 @@ async function init(){
  const {data:p,error:pe}=await db.from('delivery_driver_profiles').select('user_id,status,vehicle_type').eq('user_id',u.id).maybeSingle();if(pe)throw pe;if(!p)throw new Error('Wasifu wa dereva haujapatikana. Ingia tena baada ya kujisajili.');profile=p;
  if(!['pending','active'].includes(p.status)){notify('Akaunti yako haiwezi kuwasilisha nyaraka kwa sasa. Wasiliana na Admin.',true);save.disabled=true;}else if(p.status==='active'){notify('Akaunti yako ipo active, lakini nyaraka ambazo hazijaidhinishwa lazima zipitiwe kabla ya kupangiwa oda mpya.');}
  const {data:docs,error:de}=await db.from('delivery_driver_documents').select('document_type,file_path,status,expiry_date,review_note').eq('user_id',u.id);if(de)throw de;existing=docs||[];
- for(const card of grid.querySelectorAll('[data-type]')){const d=existing.find(x=>x.document_type===card.dataset.type);const label=card.querySelector('.doc-state');if(d){label.textContent=statusText(d.status)+(d.expiry_date?' · Huisha '+d.expiry_date:'')+(d.review_note?' · '+d.review_note:'');label.className='doc-state '+d.status;}}
+ for(const card of grid.querySelectorAll('[data-type]')){const d=existing.find(x=>x.document_type===card.dataset.type);const label=card.querySelector('.doc-state');if(d){label.textContent=statusText(d.status)+(d.expiry_date?' · Huisha '+d.expiry_date:'')+(d.review_note?' · '+d.review_note:'');label.className='doc-state '+d.status;const expiry=card.querySelector('[data-expiry]');if(expiry&&d.expiry_date)expiry.value=d.expiry_date;}}
  if(p.vehicle_type==='bicycle'){const license=grid.querySelector('[data-type="driving_license"]');license.querySelector('h3').innerHTML='3. Kitambulisho/ruhusa ya uendeshaji <span class="doc-required">*</span>';license.querySelector('p').textContent='Pakia kitambulisho kinachotakiwa kwa aina ya usafiri wako.';}
 }
 save.addEventListener('click',async()=>{
@@ -20,7 +20,7 @@ save.addEventListener('click',async()=>{
   const cards=[...grid.querySelectorAll('[data-type]')];
   for(const card of cards){
    const type=card.dataset.type,file=card.querySelector('input[type=file]').files[0],old=existing.find(x=>x.document_type===type);
-   if(!file){if(required.includes(type)&&!old)throw new Error('Tafadhali pakia nyaraka ya lazima: '+card.querySelector('h3').textContent);continue;}
+   if(!file){if(required.includes(type)&&(!old||old.status==='rejected'))throw new Error('Tafadhali pakia nyaraka ya lazima: '+card.querySelector('h3').textContent);continue;}
    if(file.size>10*1024*1024)throw new Error(file.name+' imezidi kiwango cha 10 MB.');
    const ext=extFor(file);if(!ext)throw new Error('Aina ya faili hairuhusiwi: '+file.name);
    const path=user.id+'/'+type+'/'+Date.now()+'-'+crypto.randomUUID()+'.'+ext;
