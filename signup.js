@@ -1,83 +1,12 @@
 import {db,$,showMessage,completeDriverSetup,goDashboard} from './auth-shared.js';
-
-const form=$('#signupForm');
-const submitButton=form?.querySelector('button[type="submit"]');
-
-// Always return email confirmation to the Delivery portal, not the GitHub
-// Pages account root. Keep this URL aligned with Supabase Auth Redirect URLs.
-const emailRedirectTo = new URL('./login.html', window.location.href).href;
-
-function withTimeout(promise, ms, label){
-  return Promise.race([
-    promise,
-    new Promise((_, reject)=>window.setTimeout(()=>reject(new Error(label)),ms))
-  ]);
-}
-
-if(form){
- form.addEventListener('submit',async e=>{
-  e.preventDefault();
-  if(submitButton?.disabled) return;
-  const f=new FormData(form);
-  const password=String(f.get('password')||'');
-  const confirm=String(f.get('confirm_password')||'');
-  if(password!==confirm){
-   showMessage('Nenosiri halifanani. Hakikisha umeandika nenosiri lilelile mara mbili.',true);
-   return;
-  }
-  const name=String(f.get('full_name')||'').trim();
-  const phone=String(f.get('phone')||'').trim();
-  const email=String(f.get('email')||'').trim().toLowerCase();
-  if(name.length<3||!phone||!email){
-   showMessage('Jaza majina kamili, namba ya simu na barua pepe.',true);
-   return;
-  }
-
-  const oldLabel=submitButton?.textContent||'Tuma maombi ya usajili';
-  if(submitButton){submitButton.disabled=true;submitButton.textContent='Inatuma maombi...';}
-  showMessage('Tunaandaa akaunti yako. Tafadhali subiri...');
-
-  try{
-   const {data,error}=await withTimeout(
-    db.auth.signUp({
-     email,password,
-     options:{
-      emailRedirectTo,
-      data:{
-       account_type:'delivery_driver',
-       full_name:name,
-       phone_number:phone,
-       vehicle_type:String(f.get('vehicle_type')||'motorcycle'),
-       vehicle_registration:String(f.get('vehicle_registration')||''),
-       license_number:String(f.get('license_number')||''),
-       delivery_invite_code:String(f.get('invite_code')||'')
-      }
-     }
-    }),
-    25000,
-    'Muunganisho umechukua muda mrefu. Hakiki intaneti kisha ujaribu tena.'
-   );
-   if(error) throw error;
-   if(!data?.user) throw new Error('Supabase haikurudisha taarifa za akaunti. Tafadhali jaribu tena.');
-
-   if(!data.session){
-    showMessage('Akaunti imetengenezwa. Angalia barua pepe yako na uthibitishe akaunti, kisha rudi kwenye ukurasa wa Ingia.');
-    if(submitButton){submitButton.disabled=false;submitButton.textContent='Akaunti imetengenezwa';}
-    return;
-   }
-
-   await withTimeout(
-    completeDriverSetup(data.user),
-    20000,
-    'Akaunti imetengenezwa lakini kukamilisha ombi kumechelewa. Ingia tena ili kuendelea.'
-   );
-   showMessage('Usajili umepokelewa. Subiri ukaguzi wa Admin.');
-   goDashboard();
-  }catch(err){
-   showMessage(err?.message||'Usajili haujakamilika. Jaribu tena.',true);
-   if(submitButton){submitButton.disabled=false;submitButton.textContent=oldLabel;}
-  }
- });
-}else{
- console.error('ZUNE Delivery signup: signupForm haijapatikana.');
-}
+const form=$('#signupForm'),panels=[...document.querySelectorAll('.step-panel')],dots=[...document.querySelectorAll('.step-dot')];
+const names=['Akaunti','Taarifa binafsi','Chombo','Kagua na tuma'];let step=0;
+const val=n=>String(new FormData(form).get(n)||'').trim();
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function validatePanel(i){const panel=panels[i];for(const field of panel.querySelectorAll('input,select')){if(field.type==='checkbox'&&!field.checked){field.reportValidity();return false;}if(!field.checkValidity()){field.reportValidity();return false;}}if(i===0&&val('password')!==val('confirm_password')){showMessage('Nenosiri halifanani. Liandike tena.',true);return false;}if(i===1){const dob=new Date(val('date_of_birth'));const age=(Date.now()-dob.getTime())/31557600000;if(!Number.isFinite(age)||age<18){showMessage('Dereva lazima awe na umri wa miaka 18 au zaidi.',true);return false;}}if(i===2&&val('vehicle_type')!=='bicycle'&&!val('vehicle_registration')){showMessage('Weka namba ya usajili wa chombo.',true);return false;}return true;}
+function render(){panels.forEach((p,i)=>p.classList.toggle('active',i===step));dots.forEach((d,i)=>{d.classList.toggle('active',i===step);d.classList.toggle('done',i<step)});$('#stepCounter').textContent='Hatua '+(step+1)+' kati ya 4';$('#stepName').textContent=names[step];if(step===3)$('#reviewSummary').innerHTML='<b>Jina:</b> '+safe(val('full_name'))+'<br><b>Email:</b> '+safe(val('email'))+'<br><b>Simu:</b> '+safe(val('phone'))+'<br><b>Eneo:</b> '+safe(val('district'))+', '+safe(val('region'))+'<br><b>Chombo:</b> '+safe(form.elements.vehicle_type.selectedOptions[0].textContent);}
+document.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{if(validatePanel(step)){step=Math.min(3,step+1);render();}}));document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>{step=Math.max(0,step-1);render();}));
+document.querySelector('[data-toggle=password]')?.addEventListener('click',()=>{const p=form.elements.password;p.type=p.type==='password'?'text':'password';document.querySelector('[data-toggle=password]').textContent=p.type==='password'?'Onyesha':'Ficha';});
+$('#vehicleType')?.addEventListener('change',e=>{const bicycle=e.target.value==='bicycle';form.elements.vehicle_registration.required=!bicycle;form.elements.license_number.required=!bicycle;});
+const emailRedirectTo=new URL('./login.html',window.location.href).href;const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(new Error('Muunganisho umechukua muda mrefu. Hakiki intaneti.')),ms))]);
+form?.addEventListener('submit',async e=>{e.preventDefault();if(step!==3||!validatePanel(2))return;const button=$('#submitSignup');if(button.disabled)return;button.disabled=true;button.textContent='Inatuma...';try{const {data,error}=await withTimeout(db.auth.signUp({email:val('email').toLowerCase(),password:val('password'),options:{emailRedirectTo,data:{account_type:'delivery_driver',full_name:val('full_name'),phone_number:val('phone'),date_of_birth:val('date_of_birth'),gender:val('gender'),region:val('region'),district:val('district'),residential_area:val('residential_area'),emergency_phone:val('emergency_phone'),emergency_relation:val('emergency_relation'),vehicle_type:val('vehicle_type'),vehicle_registration:val('vehicle_registration'),license_number:val('license_number'),vehicle_ownership:val('vehicle_ownership'),delivery_invite_code:val('invite_code')}}}),25000);if(error)throw error;if(!data?.user)throw new Error('Akaunti haikurudisha taarifa. Jaribu tena.');if(!data.session){showMessage('Akaunti imetengenezwa. Fungua email yako uthibitishe akaunti, kisha ingia kwenye ZUNE Delivery.');button.textContent='Imetumwa';return;}await withTimeout(completeDriverSetup(data.user),20000);showMessage('Usajili umepokelewa. Tunaelekeza kwenye dashboard.');goDashboard();}catch(err){showMessage(err?.message||'Usajili haujakamilika. Jaribu tena.',true);button.disabled=false;button.textContent='Tuma maombi';}});render();

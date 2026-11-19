@@ -50,3 +50,14 @@ The dashboard and buyer tracking UI plus the buyer-scoped tracking RPC have been
 
 ## Production test still required
 The shared database currently reports one driver profile, one application, zero uploaded driver documents, and two delivery rows (see the database validation before release). Therefore no driver currently qualifies for assignment, and a real assignment-to-buyer-receipt test cannot yet be completed. Upload and approve the five documents, then create a test delivery and verify seller assignment, handover, driver pickup, GPS updates, delivered status, and buyer receipt confirmation. GitHub Pages deployment and the separate Admin UI wiring for suspend/restore must also be checked before calling the whole service production-ready.
+
+
+## Guided driver registration rebuild
+- The driver signup screen is now a four-step mobile-first wizard: account credentials, personal details, vehicle details, and final review/submit.
+- The wizard preserves the optional Admin invitation code and sends email confirmation back to the Delivery login page.
+- Date of birth, gender, region, district, residential area, emergency contact and vehicle ownership are persisted to the driver profile after first authenticated login.
+- The migration `supabase-driver-registration-wizard.sql` adds the corresponding optional columns without deleting or rewriting existing driver data.
+- NIDA front/back images are combined into one JPEG record to preserve the current `national_id` document type and existing Admin review workflow. A combined PDF is also accepted.
+- Vehicle-use authorization becomes required when the saved vehicle ownership is not `owned`.
+- Driver payout details are deliberately not collected during public signup. They should be added as a separate verified payout-method workflow after driver approval; never request a mobile-money PIN or OTP.
+- The database's existing five-document assignment gate remains unchanged. Bicycle applicants are shown an Admin-reviewable evidence prompt rather than having required document cards hidden from the UI.
