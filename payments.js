@@ -82,6 +82,7 @@ function renderPayments(rows = []) {
     (p.transaction_reference ? '<br><small>'+safe(p.transaction_reference)+'</small>' : '')+'</td>'+
     '<td>'+safe(money(p.amount))+'</td><td>'+safe(money(p.deduction))+'</td>'+
     '<td><b>'+safe(money(p.net_amount))+'</b></td>'+
+    '<td>'+safe(methodLabel(p.payment_method))+'</td>'+
     '<td><span class="payment-status '+safe(p.status)+'">'+safe(statusLabel(p.status))+'</span></td>'+
     '<td>'+safe(date(p.paid_at || p.created_at))+'</td></tr>').join('');
 }
