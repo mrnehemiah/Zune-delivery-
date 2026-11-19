@@ -53,6 +53,7 @@ declare
   v_uid uuid := auth.uid();
   v_earned numeric(14,2) := 0;
   v_paid numeric(14,2) := 0;
+  v_paid_gross numeric(14,2) := 0;
   v_pending numeric(14,2) := 0;
   v_delivery_count integer := 0;
   v_payments jsonb := '[]'::jsonb;
@@ -72,12 +73,12 @@ begin
     and d.buyer_confirmed_at is not null
     and d.driver_payout_amount is not null;
 
-  select coalesce(sum(p.net_amount),0)
-    into v_paid
+  select coalesce(sum(p.net_amount),0), coalesce(sum(p.amount),0)
+    into v_paid, v_paid_gross
   from public.zune_driver_payment_records p
   where p.driver_id = v_uid and p.status = 'paid';
 
-  v_pending := greatest(v_earned - v_paid, 0);
+  v_pending := greatest(v_earned - v_paid_gross, 0);
 
   select coalesce(jsonb_agg(x.obj order by x.created_at desc), '[]'::jsonb)
     into v_payments
@@ -125,3 +126,71 @@ $$;
 
 revoke all on function public.zune_driver_payment_dashboard() from public, anon;
 grant execute on function public.zune_driver_payment_dashboard() to authenticated;
+
+
+-- Admin-only recorder used by the separate ZUNE Admin dashboard integration.
+-- One payment record per delivery prevents duplicate payouts.
+create or replace function public.zune_admin_record_driver_payment(
+  p_delivery_id uuid,
+  p_amount numeric,
+  p_deduction numeric default 0,
+  p_payment_method text default 'manual',
+  p_payment_phone text default null,
+  p_transaction_reference text default null,
+  p_status text default 'pending'
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_driver_id uuid;
+  v_payment_id uuid;
+  v_net numeric(14,2);
+begin
+  if auth.uid() is null or not public.zune_is_admin() then
+    raise exception 'Ni Admin Mkuu pekee anayeruhusiwa kurekodi malipo ya dereva.';
+  end if;
+  if p_amount is null or p_amount < 0 or coalesce(p_deduction,0) < 0 or coalesce(p_deduction,0) > p_amount then
+    raise exception 'Kiasi au makato si sahihi.';
+  end if;
+  if p_status not in ('pending','processing','paid','rejected') then
+    raise exception 'Hali ya malipo si sahihi.';
+  end if;
+  if p_payment_method not in ('mpesa','airtel_money','mixx_by_yas','halopesa','bank','cash','manual') then
+    raise exception 'Njia ya malipo haijaruhusiwa.';
+  end if;
+  select d.assigned_driver_id into v_driver_id
+  from public.order_deliveries d
+  where d.id=p_delivery_id and d.status='completed' and d.buyer_confirmed_at is not null
+  for update;
+  if v_driver_id is null then
+    raise exception 'Delivery haijakamilika au haijapangiwa dereva.';
+  end if;
+  v_net := p_amount - coalesce(p_deduction,0);
+  update public.order_deliveries
+    set driver_payout_amount=p_amount,
+        payout_status=case when p_status='paid' then 'paid' else 'awaiting_payout' end
+  where id=p_delivery_id;
+  insert into public.zune_driver_payment_records(
+    driver_id,delivery_id,amount,deduction,net_amount,payment_method,
+    payment_phone,transaction_reference,status,created_by,paid_at
+  ) values (
+    v_driver_id,p_delivery_id,p_amount,coalesce(p_deduction,0),v_net,p_payment_method,
+    nullif(trim(coalesce(p_payment_phone,'')),''),nullif(trim(coalesce(p_transaction_reference,'')),''),
+    p_status,auth.uid(),case when p_status='paid' then now() else null end
+  )
+  on conflict (delivery_id) do update set
+    amount=excluded.amount,deduction=excluded.deduction,net_amount=excluded.net_amount,
+    payment_method=excluded.payment_method,payment_phone=excluded.payment_phone,
+    transaction_reference=excluded.transaction_reference,status=excluded.status,
+    created_by=excluded.created_by,paid_at=excluded.paid_at
+  returning id into v_payment_id;
+  return jsonb_build_object('ok',true,'payment_id',v_payment_id,'driver_id',v_driver_id,
+    'delivery_id',p_delivery_id,'amount',p_amount,'net_amount',v_net,'status',p_status);
+end;
+$$;
+
+revoke all on function public.zune_admin_record_driver_payment(uuid,numeric,numeric,text,text,text,text) from public, anon;
+grant execute on function public.zune_admin_record_driver_payment(uuid,numeric,numeric,text,text,text,text) to authenticated;
