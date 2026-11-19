@@ -36,4 +36,4 @@ export async function completeDriverSetup(user){
   }
   return {admin:false,status:existing?.status||'pending'};
 }
-export function goDashboard(){window.location.href='./index.html';}
+export function goDashboard(){window.location.href='./dashboard.html';}
