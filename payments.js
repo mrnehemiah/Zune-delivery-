@@ -18,7 +18,7 @@ const words = {
     emptyPayments:'Bado hakuna rekodi ya malipo.', emptyDeliveries:'Bado hakuna delivery iliyokamilika yenye malipo yaliyowekwa.',
     loading:'Inapakia...', refresh:'Onyesha upya', dashboard:'Dashibodi', logout:'Toka',
     amount:'Kiasi hakijawekwa', paidStatus:'Imelipwa', pendingStatus:'Inasubiri', processingStatus:'Inachakatwa', rejectedStatus:'Imekataliwa',
-    unknown:'Haijulikani', fee:'Makato', net:'Unapokea', delivery:'Delivery', order:'Oda',
+    unknown:'Haijulikani', fee:'Makato', net:'Unapokea', method:'Njia', delivery:'Delivery', order:'Oda',
     note:'Kumbuka: Ada ya delivery ya mnunuzi si sawa moja kwa moja na mapato ya dereva. Kiasi cha dereva huwekwa na mfumo wa malipo wa ZUNE; hakuna makadirio yanayoonyeshwa kama malipo halisi.',
     access:'Dashibodi hii ni ya madereva walioidhinishwa pekee.', failed:'Imeshindikana kupakia taarifa za malipo.'
   },
@@ -30,7 +30,7 @@ const words = {
     emptyPayments:'There are no payment records yet.', emptyDeliveries:'No completed delivery with a payout amount yet.',
     loading:'Loading...', refresh:'Refresh', dashboard:'Dashboard', logout:'Log out',
     amount:'Amount not set', paidStatus:'Paid', pendingStatus:'Pending', processingStatus:'Processing', rejectedStatus:'Rejected',
-    unknown:'Unknown', fee:'Deductions', net:'Net amount', delivery:'Delivery', order:'Order',
+    unknown:'Unknown', fee:'Deductions', net:'Net amount', method:'Method', delivery:'Delivery', order:'Order',
     note:'Note: The customer delivery fee is not automatically the driver’s earnings. ZUNE must set the driver payout amount; estimates are never presented as actual payments.',
     access:'This dashboard is only available to approved drivers.', failed:'Could not load payment information.'
   }
@@ -46,7 +46,7 @@ function notice(message, error = false) {
   el.classList.remove('hidden','error');
   if (error) el.classList.add('error');
 }
-function statusLabel(status) {
+function methodLabel(method) { return ({mpesa:'M-Pesa',airtel_money:'Airtel Money',mixx_by_yas:'Mixx by Yas',halopesa:'HaloPesa',bank:lang==='sw'?'Benki':'Bank',cash:'Cash',manual:'Manual'})[method] || '—'; }\nfunction statusLabel(status) {
   return ({paid:t('paidStatus'),pending:t('pendingStatus'),processing:t('processingStatus'),rejected:t('rejectedStatus')})[status] || t('unknown');
 }
 function setLanguage() {
@@ -74,7 +74,7 @@ function renderStats(totals = {}) {
 function renderPayments(rows = []) {
   const body = $('#paymentRows');
   if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="6" class="empty-state">'+safe(t('emptyPayments'))+'</td></tr>';
+    body.innerHTML = '<tr><td colspan="7" class="empty-state">'+safe(t('emptyPayments'))+'</td></tr>';
     return;
   }
   body.innerHTML = rows.map(p => '<tr>'+
