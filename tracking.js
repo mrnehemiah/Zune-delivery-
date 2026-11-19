@@ -1,5 +1,5 @@
 import{createClient}from'https://esm.sh/@supabase/supabase-js@2.119.0';
-const db=createClient('https://rpkogiieegqgxqbzwxwo.supabase.co','sb_publishable_2TEqZv-NBM9n5knU46ngqA_wqO3V1uf',{auth:{storageKey:'zune-delivery-driver-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const db=createClient('https://rpkogiieegqgxqbzwxwo.supabase.co','sb_publishable_2TEqZv-NBM9n5knU46ngqA_wqO3V1uf',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const $=s=>document.querySelector(s),id=new URLSearchParams(location.search).get('delivery_id');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const labels={pending:'Inasubiri dereva',assigned:'Dereva amechaguliwa',ready_for_pickup:'Muuzaji anaandaa kukabidhi',picked_up:'Dereva amepokea mzigo',in_transit:'Dereva yuko njiani',delivered:'Mzigo umefikishwa · thibitisha kupokea',completed:'Delivery imekamilika',cancelled:'Delivery imeghairiwa'};
