@@ -1,42 +1,11 @@
 <!doctype html>
-<html lang="sw"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#087f5b"><title>ZUNE Delivery</title><link rel="stylesheet" href="./styles.css?v=delivery-fix-3"></head>
-<body><header class="topbar"><a class="brand" href="./">ⓏⓊⓃⒺ <span>DELIVERY</span></a><div class="top-actions"><button id="languageBtn" class="ghost">EN</button><button id="logoutBtn" class="ghost hidden">Toka</button></div></header>
-<main class="shell"><section class="hero"><div><p class="eyebrow">ZUNE LOGISTICS NETWORK</p><h1>Fikisha oda.<br><em>Jenga uaminifu.</em></h1><p class="muted">Jiunge na mtandao wa madereva wa ZUNE au ingia kwenye akaunti yako.</p></div><div class="hero-mark">Ⓩ</div></section>
-<div id="notice" class="notice hidden" role="status"></div>
-<section id="authView" class="panel auth-grid"><div><h2 id="authTitle">Karibu ZUNE Delivery</h2><p class="muted" id="authIntro">Ingia au fungua akaunti ya dereva.</p><div class="application-actions"><a class="primary" href="./login.html">Ingia kwenye akaunti</a><a class="ghost" href="./signup.html">Jisajili kama dereva</a></div><div class="tabs"><button class="tab active" data-mode="login">Ingia</button><button class="tab" data-mode="register">Jisajili</button></div>
-<form id="authForm" class="form"><div id="registerFields" class="hidden"><label>Majina kamili<input name="full_name" autocomplete="name"></label><label>Namba ya simu<input name="phone" type="tel" placeholder="+255..."></label><label>Aina ya usafiri<select name="vehicle_type"><option value="motorcycle">Pikipiki</option><option value="car">Gari</option><option value="bicycle">Baiskeli</option><option value="other">Nyingine</option></select></label><label>Namba ya usajili wa chombo<input name="vehicle_registration" placeholder="Mfano T 123 ABC"></label><label>Namba ya leseni (inapohitajika)<input name="license_number"></label><label>Msimbo wa mwaliko (hiari)<input name="invite_code" autocomplete="off"></label><p class="hint">Unaweza kujisajili bila mwaliko. Mwaliko uliotolewa na Admin utahakikiwa.</p></div>
-<label barua pepe>Barua pepe<input name="email" type="email" autocomplete="email" required></label><label>Nenosiri<input name="password" type="password" minlength="8" autocomplete="current-password" required></label><button class="primary" id="authSubmit" type="submit">Ingia</button></form></div>
-<aside class="side-note"><span class="pill">USALAMA KWANZA</span><h3>Usajili wa njia mbili</h3><p>Dereva anaweza kuomba kujiunga mwenyewe au kutumia mwaliko rasmi wa Admin.</p><ol><li>Jaza taarifa zako</li><li>Thibitisha barua pepe ikiwa itaombwa</li><li>Subiri ukaguzi wa Admin</li><li>Baada ya idhini, anza kupokea kazi</li></ol><p class="tiny">Akaunti haitapokea oda kabla ya kuidhinishwa.</p></aside></section>
-<section id="dashboardView" class="hidden"><div class="panel"><div class="row-between"><div><p class="eyebrow">DASHBOARD</p><h2 id="welcomeTitle">Akaunti ya dereva</h2></div><span id="statusPill" class="pill">Inasubiri</span></div><div id="driverSummary" class="summary-grid"></div><div id="driverMessage" class="notice"></div><div class="application-actions"><a class="primary" href="./driver-documents.html">Pakia / Simamia nyaraka za uthibitishaji →</a><a class="ghost" href="./jobs.html">Oda nilizopangiwa →</a></div></div>
-<section id="adminPanel" class="panel hidden"><h2>Usimamizi wa madereva</h2><p class="muted">Sehemu ya Admin kutengeneza mialiko. Ukaguzi wa maombi utaongezwa kwenye Admin Dashboard.</p><form id="inviteForm" class="form compact"><label>Barua pepe ya dereva (hiari)<input name="email" type="email"></label><label>Simu ya dereva (hiari)<input name="phone" type="tel"></label><label>Muda wa mwaliko<select name="days"><option value="1">Siku 1</option><option value="3" selected>Siku 3</option><option value="7">Siku 7</option><option value="14">Siku 14</option></select></label><button class="primary">Tengeneza mwaliko</button></form><div id="inviteResult" class="invite-result hidden"></div><hr><h3>Maombi ya madereva</h3><button id="refreshApplications" class="ghost">Onyesha upya</button><div id="applicationList">Inapakia...</div></section></section>
-<footer><span>© ZUNE Delivery</span><span>HTML · CSS · JavaScript · Supabase</span></footer></main><script>
-/* Keep login/register tabs responsive even if the remote Supabase module is slow. */
-(function(){
-  const splash=document.getElementById('welcomeScreen');
-  let splashClosed=false;
-  function closeWelcome(){
-    if(splashClosed || !splash) return;
-    splashClosed=true;
-    splash.classList.add('leaving');
-    window.setTimeout(function(){ if(splash.isConnected) splash.remove(); },500);
-  }
-  /* Welcome screen closes automatically after exactly 4 seconds. */
-  window.setTimeout(closeWelcome,4000);
-  const tabs=document.querySelectorAll('.tab');
-  const fields=document.getElementById('registerFields');
-  const title=document.getElementById('authTitle');
-  const submit=document.getElementById('authSubmit');
-  const password=document.querySelector('#authForm [name="password"]');
-  tabs.forEach(function(tab){
-    tab.addEventListener('click',function(){
-      const registering=tab.dataset.mode==='register';
-      tabs.forEach(function(item){item.classList.toggle('active',item===tab)});
-      fields.classList.toggle('hidden',!registering);
-      title.textContent=registering?'Jisajili ZUNE Delivery':'Karibu ZUNE Delivery';
-      submit.textContent=registering?'Fungua akaunti':'Ingia';
-      if(password)password.autocomplete=registering?'new-password':'current-password';
-    });
-  });
-})();
-</script>
-<script type="module" src="./app.js?v=delivery-auth-pages-1"></script></body></html>
+<html lang="sw"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#075b43"><title>ZUNE Delivery</title><link rel="stylesheet" href="./styles.css?v=rebuild-1"></head>
+<body>
+<header class="topbar"><a class="brand" href="./index.html">ⓏⓊⓃⒺ <span>DELIVERY</span></a><div class="top-actions"><button id="languageBtn" class="ghost" type="button">EN</button><a class="ghost" href="./login.html">Ingia</a></div></header>
+<main class="shell">
+<section class="hero"><div><p class="eyebrow">ZUNE LOGISTICS NETWORK</p><h1>Usafirishaji wa uhakika.<br><em>Safari iliyo wazi.</em></h1><p class="muted">Jukwaa la madereva, wauzaji na usimamizi wa delivery ndani ya mfumo wa ZUNE.</p><div class="application-actions"><a class="primary" href="./signup.html">Jiunge kama dereva</a><a class="ghost" href="./login.html">Ingia kwenye akaunti</a></div></div><div class="hero-mark">Ⓩ</div></section>
+<section class="grid-cards"><article class="panel"><span class="pill">01 · DEREVA</span><h2>Dashibodi ya dereva</h2><p class="muted">Oda ulizopangiwa, nyaraka, ramani, GPS na historia ya safari zako.</p><a class="text-link" href="./login.html">Fungua akaunti →</a></article><article class="panel"><span class="pill">02 · UTHIBITISHAJI</span><h2>Usalama kwanza</h2><p class="muted">Maombi na nyaraka hukaguliwa kabla dereva hajapangiwa oda.</p><a class="text-link" href="./signup.html">Tuma maombi →</a></article><article class="panel"><span class="pill">03 · UFUATILIAJI</span><h2>Delivery inayoonekana</h2><p class="muted">Mteja na wahusika wanaweza kufuatilia hatua za safari kwa ruhusa husika.</p><a class="text-link" href="./login.html">Endelea →</a></article></section>
+<footer><span>© ZUNE Delivery</span><span>HTML · CSS · JavaScript · Supabase · OpenStreetMap</span></footer></main>
+<style>.grid-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.grid-cards .panel{margin-top:18px}.text-link{color:#087f5b;font-weight:800;text-decoration:none}@media(max-width:760px){.grid-cards{grid-template-columns:1fr}}</style>
+<script>const b=document.querySelector('#languageBtn');b.addEventListener('click',()=>{const en=document.documentElement.lang==='sw';document.documentElement.lang=en?'en':'sw';document.querySelector('.hero h1').innerHTML=en?'Reliable delivery.<br><em>Every step visible.</em>':'Usafirishaji wa uhakika.<br><em>Safari iliyo wazi.</em>';document.querySelector('.hero .muted').textContent=en?'A delivery platform for drivers, sellers and operations across ZUNE.':'Jukwaa la madereva, wauzaji na usimamizi wa delivery ndani ya mfumo wa ZUNE.';b.textContent=en?'SW':'EN';});</script>
+</body></html>
