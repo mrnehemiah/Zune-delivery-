@@ -1,0 +1,38 @@
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.119.0';
+const db=createClient('https://rpkogiieegqgxqbzwxwo.supabase.co','sb_publishable_2TEqZv-NBM9n5knU46ngqA_wqO3V1uf',{auth:{storageKey:'zune-delivery-driver-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const $=s=>document.querySelector(s),grid=$('#docsGrid'),message=$('#docsMessage'),save=$('#saveDocs');
+const required=['national_id','driver_photo','driving_license','vehicle_registration','vehicle_insurance'];
+let user=null,profile=null,existing=[];
+function notify(t,err=false){message.hidden=false;message.textContent=t;message.classList.toggle('error',err)}
+const extFor=f=>({ 'image/jpeg':'jpg','image/png':'png','image/webp':'webp','application/pdf':'pdf'}[f.type]);
+function statusText(s){return s==='approved'?'Imeidhinishwa':s==='rejected'?'Imekataliwa · pakia tena':'Inasubiri ukaguzi'}
+async function init(){
+ const {data:{user:u},error}=await db.auth.getUser();if(error)throw error;if(!u){location.href='./login.html';return;}user=u;
+ const {data:p,error:pe}=await db.from('delivery_driver_profiles').select('user_id,status,vehicle_type').eq('user_id',u.id).maybeSingle();if(pe)throw pe;if(!p)throw new Error('Wasifu wa dereva haujapatikana. Ingia tena baada ya kujisajili.');profile=p;
+ if(p.status!=='pending'){notify(p.status==='active'?'Nyaraka zako zimepitishwa. Akaunti yako ya dereva iko active.':'Akaunti yako haiwezi kuwasilisha nyaraka kwa sasa.',p.status!=='active');save.disabled=true;}
+ const {data:docs,error:de}=await db.from('delivery_driver_documents').select('document_type,file_path,status,expiry_date,review_note').eq('user_id',u.id);if(de)throw de;existing=docs||[];
+ for(const card of grid.querySelectorAll('[data-type]')){const d=existing.find(x=>x.document_type===card.dataset.type);const label=card.querySelector('.doc-state');if(d){label.textContent=statusText(d.status)+(d.expiry_date?' · Huisha '+d.expiry_date:'')+(d.review_note?' · '+d.review_note:'');label.className='doc-state '+d.status;}}
+ if(p.vehicle_type==='bicycle'){const license=grid.querySelector('[data-type="driving_license"]');license.querySelector('h3').innerHTML='3. Kitambulisho/ruhusa ya uendeshaji <span class="doc-required">*</span>';license.querySelector('p').textContent='Pakia kitambulisho kinachotakiwa kwa aina ya usafiri wako.';}
+}
+save.addEventListener('click',async()=>{
+ if(!user||!profile)return;save.disabled=true;save.textContent='Inahifadhi...';
+ try{
+  const cards=[...grid.querySelectorAll('[data-type]')];
+  for(const card of cards){
+   const type=card.dataset.type,file=card.querySelector('input[type=file]').files[0],old=existing.find(x=>x.document_type===type);
+   if(!file){if(required.includes(type)&&!old)throw new Error('Tafadhali pakia nyaraka ya lazima: '+card.querySelector('h3').textContent);continue;}
+   if(file.size>10*1024*1024)throw new Error(file.name+' imezidi kiwango cha 10 MB.');
+   const ext=extFor(file);if(!ext)throw new Error('Aina ya faili hairuhusiwi: '+file.name);
+   const path=user.id+'/'+type+'/'+Date.now()+'-'+crypto.randomUUID()+'.'+ext;
+   const {error:up}=await db.storage.from('zune-driver-documents').upload(path,file,{contentType:file.type,upsert:false});if(up)throw up;
+   const expiry=card.querySelector('[data-expiry]')?.value||null;
+   const {error:saveError}=await db.from('delivery_driver_documents').upsert({user_id:user.id,document_type:type,file_path:path,original_file_name:file.name,mime_type:file.type,file_size:file.size,expiry_date:expiry,status:'pending',review_note:null,reviewed_by:null,reviewed_at:null},{onConflict:'user_id,document_type'});if(saveError){await db.storage.from('zune-driver-documents').remove([path]);throw saveError;}
+   if(old?.file_path)await db.storage.from('zune-driver-documents').remove([old.file_path]);
+   existing=existing.filter(x=>x.document_type!==type);existing.push({document_type:type,file_path:path,status:'pending',expiry_date:expiry});
+   card.querySelector('.doc-state').textContent='Imepakiwa · Inasubiri ukaguzi';card.querySelector('.doc-state').className='doc-state pending';card.querySelector('input[type=file]').value='';
+  }
+  notify('Nyaraka zimehifadhiwa. Admin Mkuu atazikagua; akaunti yako itasubiri idhini mpaka ukaguzi ukamilike.');
+ }catch(e){notify(e.message||'Imeshindikana kuhifadhi nyaraka.',true);}
+ finally{save.disabled=false;save.textContent='Hifadhi nyaraka';}
+});
+init().catch(e=>notify(e.message,true));
