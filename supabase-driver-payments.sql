@@ -71,7 +71,7 @@ begin
   where d.assigned_driver_id = v_uid
     and d.status = 'completed'
     and d.buyer_confirmed_at is not null
-    and d.driver_payout_amount is not null;
+;
 
   select coalesce(sum(p.net_amount),0), coalesce(sum(p.amount),0)
     into v_paid, v_paid_gross
