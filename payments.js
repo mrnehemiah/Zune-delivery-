@@ -59,7 +59,7 @@ function setLanguage() {
   $('#deliveryIntro').textContent = t('deliveriesIntro');
   $('#footnote').textContent = t('note');
   $('#refreshBtn').textContent = t('refresh');
-  document.querySelector('a[href="./dashboard.html"]').textContent = t('dashboard');
+  $('#dashboardLink').textContent = t('dashboard');
   $('#logoutBtn').textContent = t('logout');
 }
 function renderStats(totals = {}) {
