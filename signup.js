@@ -3,6 +3,10 @@ import {db,$,showMessage,completeDriverSetup,goDashboard} from './auth-shared.js
 const form=$('#signupForm');
 const submitButton=form?.querySelector('button[type="submit"]');
 
+// Always return email confirmation to the Delivery portal, not the GitHub
+// Pages account root. Keep this URL aligned with Supabase Auth Redirect URLs.
+const emailRedirectTo = new URL('./login.html', window.location.href).href;
+
 function withTimeout(promise, ms, label){
   return Promise.race([
     promise,
@@ -37,15 +41,18 @@ if(form){
    const {data,error}=await withTimeout(
     db.auth.signUp({
      email,password,
-     options:{data:{
-      account_type:'delivery_driver',
-      full_name:name,
-      phone_number:phone,
-      vehicle_type:String(f.get('vehicle_type')||'motorcycle'),
-      vehicle_registration:String(f.get('vehicle_registration')||''),
-      license_number:String(f.get('license_number')||''),
-      delivery_invite_code:String(f.get('invite_code')||'')
-     }}
+     options:{
+      emailRedirectTo,
+      data:{
+       account_type:'delivery_driver',
+       full_name:name,
+       phone_number:phone,
+       vehicle_type:String(f.get('vehicle_type')||'motorcycle'),
+       vehicle_registration:String(f.get('vehicle_registration')||''),
+       license_number:String(f.get('license_number')||''),
+       delivery_invite_code:String(f.get('invite_code')||'')
+      }
+     }
     }),
     25000,
     'Muunganisho umechukua muda mrefu. Hakiki intaneti kisha ujaribu tena.'
