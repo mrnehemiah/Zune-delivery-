@@ -168,10 +168,10 @@ begin
   from public.order_deliveries d
   join public.delivery_driver_profiles dp on dp.user_id=d.assigned_driver_id
   where d.id=p_delivery_id and d.status='completed'
-    and d.buyer_confirmed_at is not null and dp.status='active'
+    and d.buyer_confirmed_at is not null
   for update of d;
   if v_driver_id is null then
-    raise exception 'Delivery haijakamilika, haijathibitishwa, au dereva si active.';
+    raise exception 'Delivery haijakamilika, haijathibitishwa, au dereva hajapatikana.';
   end if;
   select status into v_old_status from public.zune_driver_payment_records where delivery_id=p_delivery_id;
   v_net := p_amount - coalesce(p_deduction,0);
