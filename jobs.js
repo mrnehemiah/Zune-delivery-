@@ -31,5 +31,7 @@ async function load(){
 document.querySelector('#refreshJobs')?.addEventListener('click',async()=>{const b=document.querySelector('#refreshJobs');b.disabled=true;b.textContent='Inapakia...';try{await load()}catch(e){msg(e.message,true)}finally{b.disabled=false;b.textContent='Onyesha upya oda'}});
 document.querySelector('#logoutJobs')?.addEventListener('click',async()=>{const {error}=await db.auth.signOut();if(error){msg(error.message,true);return}window.location.href='./login.html'});
 load().catch(e=>{root.innerHTML='<h2>Imeshindikana kupakia oda</h2><p class="muted">'+esc(e.message)+'</p><a class="primary" href="./login.html">Rudi kuingia</a>';});
+setInterval(()=>{if(!document.hidden)load().catch(e=>msg(e.message,true));},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)load().catch(e=>msg(e.message,true));});
 
 window.addEventListener('pagehide',stopGps);
