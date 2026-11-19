@@ -12,7 +12,7 @@ let busy = false;
 const words = {
   sw: {
     title:'Malipo yangu', intro:'Fuatilia mapato ya delivery, malipo yaliyokamilika na yanayosubiri.',
-    earned:'Jumla ya mapato', paid:'Yamelipwa', pending:'Yanasubiri', completed:'Delivery zilizokamilika',
+    gross:'Mapato ghafi', commission:'Commission ya ZUNE (3%)', earned:'Mapato halisi', paid:'Yamelipwa', pending:'Yanasubiri', completed:'Delivery zilizokamilika',
     history:'Historia ya malipo', historyIntro:'Rekodi za malipo zilizowekwa na ZUNE Admin.',
     deliveries:'Mapato kwa kila delivery', deliveriesIntro:'Malipo huhesabiwa baada ya mnunuzi kuthibitisha kupokea mzigo na kiasi cha dereva kuwekwa kwenye oda.',
     emptyPayments:'Bado hakuna rekodi ya malipo.', emptyDeliveries:'Bado hakuna delivery iliyokamilika yenye malipo yaliyowekwa.',
@@ -24,7 +24,7 @@ const words = {
   },
   en: {
     title:'My payments', intro:'Track delivery earnings, completed payouts and pending payments.',
-    earned:'Total earnings', paid:'Paid', pending:'Pending', completed:'Completed deliveries',
+    gross:'Gross earnings', commission:'ZUNE commission (3%)', earned:'Net earnings', paid:'Paid', pending:'Pending', completed:'Completed deliveries',
     history:'Payment history', historyIntro:'Payment records issued by ZUNE Admin.',
     deliveries:'Earnings per delivery', deliveriesIntro:'Earnings are counted after the buyer confirms receipt and the driver payout amount is set for the delivery.',
     emptyPayments:'There are no payment records yet.', emptyDeliveries:'No completed delivery with a payout amount yet.',
@@ -64,6 +64,8 @@ function setLanguage() {
 }
 function renderStats(totals = {}) {
   const cards = [
+    [t('gross'), money(totals.gross_earned)],
+    [t('commission'), money(totals.commission)],
     [t('earned'), money(totals.earned)],
     [t('paid'), money(totals.paid)],
     [t('pending'), money(totals.pending)],
