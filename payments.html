@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="sw">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#075b43"><title>Malipo yangu | ZUNE Delivery</title>
+<link rel="stylesheet" href="./delivery-dashboard.css?v=2"><link rel="stylesheet" href="./payments.css?v=1">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="./dashboard.html">ⓏⓊⓃⒺ <small>DELIVERY</small></a>
+<div class="top-actions"><button id="languageBtn" class="btn soft" type="button">EN</button><a class="btn soft" href="./dashboard.html">Dashibodi</a><button id="refreshBtn" class="btn soft" type="button">Onyesha upya</button><button id="logoutBtn" class="btn soft" type="button">Toka</button></div></header>
+<main class="shell">
+<section class="hero payments-hero"><div><p class="eyebrow">DRIVER FINANCE · ZUNE DELIVERY</p><h1 id="pageTitle">Malipo yangu</h1><p id="pageIntro">Fuatilia mapato ya delivery, malipo yaliyokamilika na yanayosubiri.</p></div><div class="hero-mark">TSh</div></section>
+<div id="notice" class="notice hidden" role="status"></div>
+<section class="stats payment-stats" id="stats"><article class="stat"><span>Jumla ya mapato</span><strong>—</strong></article><article class="stat"><span>Yamelipwa</span><strong>—</strong></article><article class="stat"><span>Yanasubiri</span><strong>—</strong></article><article class="stat"><span>Delivery zilizokamilika</span><strong>—</strong></article></section>
+<section class="panel payment-panel"><div class="panel-head"><div><p class="eyebrow">PAYMENT HISTORY</p><h2 id="historyTitle">Historia ya malipo</h2><p class="muted" id="historyIntro">Rekodi za malipo zilizowekwa na ZUNE Admin.</p></div></div>
+<div class="table-wrap"><table><thead><tr><th>Oda / Delivery</th><th>Kiasi</th><th>Makato</th><th>Unapokea</th><th>Hali</th><th>Tarehe</th></tr></thead><tbody id="paymentRows"><tr><td colspan="6">Inapakia...</td></tr></tbody></table></div></section>
+<section class="panel payment-panel"><div class="panel-head"><div><p class="eyebrow">DELIVERY EARNINGS</p><h2 id="deliveryTitle">Mapato kwa kila delivery</h2><p class="muted" id="deliveryIntro">Malipo huhesabiwa baada ya mnunuzi kuthibitisha kupokea mzigo na kiasi cha dereva kuwekwa kwenye oda.</p></div></div><div id="deliveryRows" class="delivery-earnings"><p class="muted">Inapakia...</p></div></section>
+<p class="payment-footnote" id="footnote">Kumbuka: Ada ya delivery ya mnunuzi si sawa moja kwa moja na mapato ya dereva. Kiasi cha dereva huwekwa na mfumo wa malipo wa ZUNE; hakuna makadirio yanayoonyeshwa kama malipo halisi.</p>
+<footer><span>© ZUNE Delivery</span><span>Malipo salama na yenye kumbukumbu.</span></footer>
+</main><script type="module" src="./payments.js?v=1"></script></body></html>
