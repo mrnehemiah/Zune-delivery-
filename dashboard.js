@@ -23,9 +23,12 @@ async function init(){
  $('#greeting').innerHTML='<span class="driver-greeting-avatar" id="driverGreetingAvatar" aria-hidden="true"></span>'+esc(tr('Habari, ','Hello, ')+name.split(' ')[0]+'!');if(driver.profile_photo_path){const{data:photo}=await db.storage.from('zune-driver-documents').createSignedUrl(driver.profile_photo_path,3600);if(photo?.signedUrl)$('#driverGreetingAvatar').innerHTML='<img alt="" src="'+esc(photo.signedUrl)+'">';}
  $('#statusText').innerHTML='<span class="status '+(status==='active'?'':status==='pending'?'pending':'bad')+'">'+esc(labels[status]||status)+'</span><span class="hero-status-copy">'+(status==='active'?tr(' Akaunti yako iko tayari kwa shughuli za delivery.',' Your account is ready for delivery activity.'):tr(' Kamilisha hatua za uhakiki ili uweze kupokea oda.',' Complete verification to become eligible for delivery assignments.'))+'</span>';
  const active=(jobs||[]).filter(j=>!['completed','cancelled'].includes(j.delivery_status));
- const completed=(jobs||[]).filter(j=>['completed','delivered'].includes(j.delivery_status)).length;
- const approved=(docs||[]).filter(d=>d.status==='approved').length;
- const missing=required.filter(t=>!(docs||[]).some(d=>d.document_type===t&&d.status==='approved'));
+ const completed=(jobs||[]).filter(j=>j.delivery_status==='completed').length;
+ const today=new Date().toISOString().slice(0,10);
+ const requiredForDriver=required.filter(t=>!(t==='driving_license'&&driver.vehicle_type==='bicycle'));
+ const isCurrentApproved=d=>d.status==='approved'&&(!d.expiry_date||d.expiry_date>=today);
+ const approved=requiredForDriver.filter(t=>(docs||[]).some(d=>d.document_type===t&&isCurrentApproved(d))).length;
+ const missing=requiredForDriver.filter(t=>!(docs||[]).some(d=>d.document_type===t&&isCurrentApproved(d)));
  $('#stats').innerHTML=stat(tr('Hali ya akaunti','Account status'),esc(labels[status]||status),'account')+stat(tr('Oda zinazoendelea','Active deliveries'),active.length,'orders')+stat(tr('Oda zilizokamilika','Completed deliveries'),completed,'done')+stat(tr('Nyaraka zilizoidhinishwa','Approved documents'),approved+'/'+required.length,'docs');
  if(status!=='active')notice(status==='rejected'?tr('Maombi yamekataliwa: ','Application rejected: ')+(app?.review_note||driver.rejection_reason||''):tr('Maombi yako yanasubiri idhini ya Admin. Huwezi kupokea oda bado.','Your application is awaiting Admin approval. You cannot receive deliveries yet.'),status==='rejected');
  else if(missing.length)notice(tr('Kabla ya kupangiwa oda, idhinisha nyaraka hizi: ','Before receiving deliveries, get these documents approved: ')+missing.join(', '));
