@@ -22,7 +22,7 @@ Existing `order_deliveries` rows are extended with driver assignment, confirmati
 - `auth-shared.js`: shared Supabase client and driver-application bootstrap
 - `jobs.html` / `jobs.js`: assigned jobs, pickup/transit/delivery confirmations, GPS sharing, refresh and sign-out
 
-Driver accounts are created with Supabase Auth. After email confirmation (if enabled), the driver signs in; the portal creates the pending driver profile/application under the signed-in identity. Admin approval is required before the driver queue RPC returns assignments. The queue and assignment checks share one expiry-aware eligibility function: national ID, driver photo, vehicle registration and insurance are required; a driving licence is additionally required for motorized vehicles. License and insurance approvals must have a future expiry date.
+Driver accounts are created with Supabase Auth. After email confirmation (if enabled), the driver signs in; the portal creates the pending driver profile/application under the signed-in identity. Admin approval is required before the driver queue RPC returns assignments. The queue and assignment checks share one expiry-aware eligibility function: national ID, driver photo, vehicle registration and insurance are required; a driving licence is additionally required for motorized vehicles. License and insurance approvals must have a future expiry date. Motorized drivers must also have both `vehicle_registration` and `license_number` populated in their profile before new assignments are allowed; bicycles do not require a driving-license field.
 
 ## Driver account and vehicle changes
 - Drivers can update their profile photo and submit a vehicle-detail change request from Account.
