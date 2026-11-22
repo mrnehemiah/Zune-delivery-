@@ -1,0 +1,47 @@
+/* ZUNE Delivery landing page — refined responsive 3D design */
+.topbar{min-height:82px;height:auto;padding:14px max(20px,calc((100vw - 1120px)/2));gap:14px;position:sticky;top:0;z-index:40;backdrop-filter:blur(16px)}
+.brand{display:flex;align-items:center;gap:9px;font-size:20px;white-space:nowrap;letter-spacing:.1em}
+.brand span{font-size:10px;letter-spacing:.24em}
+.top-actions{align-items:center;gap:12px}
+.top-actions .ghost{min-width:76px;min-height:46px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px}
+.shell{max-width:1160px;padding-top:38px;padding-bottom:54px}
+.hero{min-height:410px;padding:clamp(30px,5vw,62px);border-radius:30px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(220px,.85fr);gap:28px;align-items:center}
+.hero>div:first-child{max-width:640px;position:relative;z-index:2}
+.hero .eyebrow{font-size:11px;letter-spacing:.25em;margin:0 0 18px;color:#9ce8c7}
+.hero h1{font-size:clamp(38px,5.2vw,64px);line-height:1.04;letter-spacing:-.045em;margin:0 0 22px;max-width:670px}
+.hero em{color:#aaf2d1}
+.hero .muted{font-size:clamp(16px,1.8vw,19px);line-height:1.65;max-width:510px;margin:0 0 28px;color:#e1f5e9}
+.hero-mark{width:min(100%,290px);aspect-ratio:1;border-radius:42% 58% 56% 44%;display:grid;place-items:center;justify-self:center;font-size:clamp(110px,17vw,190px);color:#c6f8df70;background:linear-gradient(145deg,#ffffff20,#ffffff08);border:1px solid #ffffff35;box-shadow:inset 0 2px 2px #ffffff40,0 28px 45px #002e2040,0 0 0 18px #ffffff08;transform:rotate(-7deg);position:relative}
+.hero-mark:after{content:"";position:absolute;inset:16px;border:1px dashed #ffffff45;border-radius:inherit}
+.application-actions{gap:13px;align-items:stretch}
+.application-actions a{min-height:58px;padding:15px 22px;display:inline-flex;align-items:center;justify-content:center;border-radius:15px;font-size:15px;line-height:1.3;text-decoration:none;box-shadow:0 5px 0 #034b38,0 12px 22px #002e2035,inset 0 1px #ffffff55}
+.application-actions a.ghost{background:linear-gradient(180deg,#fff,#eaf5ee);color:#205641;border:1px solid #d4e8da;box-shadow:0 5px 0 #cfdfd4,0 10px 20px #002e2018}
+.grid-cards{gap:18px;margin-top:28px}
+.grid-cards .panel{margin-top:0;padding:27px;min-height:245px;display:flex;flex-direction:column;align-items:flex-start}
+.grid-cards .panel h2{font-size:22px;letter-spacing:-.025em;margin:20px 0 9px}
+.grid-cards .panel p{font-size:14px;line-height:1.65;margin:0 0 18px}
+.grid-cards .text-link{margin-top:auto;padding-top:8px}
+.grid-cards .track-form{width:100%;margin-top:auto}
+.grid-cards .track-form input{min-height:46px}
+.grid-cards .track-form .primary{font-size:14px;min-height:46px}
+footer{margin-top:18px;border-top:1px solid #dce9e0}
+@media(max-width:760px){
+ .topbar{min-height:74px;padding:11px 16px}
+ .brand{font-size:17px;gap:6px}.brand span{font-size:9px}
+ .top-actions{gap:8px}.top-actions .ghost{min-width:58px;min-height:43px;padding:9px 13px}
+ .shell{padding:22px 14px 38px}
+ .hero{min-height:0;grid-template-columns:1fr;padding:30px 24px 28px;gap:22px;border-radius:26px}
+ .hero>div:first-child{max-width:none}
+ .hero .eyebrow{font-size:10px;letter-spacing:.2em;margin-bottom:16px}
+ .hero h1{font-size:clamp(36px,9vw,48px);line-height:1.08;letter-spacing:-.04em;margin-bottom:17px;max-width:560px}
+ .hero .muted{font-size:16px;line-height:1.58;margin-bottom:23px}
+ .hero-mark{width:118px;font-size:76px;justify-self:end;margin:-5px 6px 0 0;grid-row:2;opacity:.85}
+ .hero-mark:after{inset:9px}
+ .application-actions{display:grid;grid-template-columns:1fr;gap:11px}
+ .application-actions a{width:100%;min-height:54px;padding:14px 17px;font-size:15px}
+ .grid-cards{grid-template-columns:1fr;gap:14px;margin-top:22px}
+ .grid-cards .panel{min-height:0;padding:23px}
+ .grid-cards .panel h2{margin-top:16px}
+ footer{font-size:10px;line-height:1.6}
+}
+@media(max-width:380px){.brand{font-size:15px}.brand span{font-size:8px}.top-actions .ghost{min-width:50px;padding:8px 10px}.hero{padding:26px 20px}.hero h1{font-size:35px}}
