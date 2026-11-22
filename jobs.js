@@ -5,6 +5,16 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const labels={assigned:'Dereva amechaguliwa',ready_for_pickup:'Subiri uthibitisho wa muuzaji',picked_up:'Umepokea mzigo',in_transit:'Uko njiani',delivered:'Umefikisha · subiri mnunuzi',completed:'Imekamilika'};
 let rows=[],gpsTimer=null,trackingDeliveryId=null,driverMaps=[],activeFilter='all',loading=false;
 const money=v=>'TSh '+Number(v||0).toLocaleString('en-US');
+const iconPaths={
+ user:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
+ phone:'<path d="M7 3h3l2 5-2 2a15 15 0 0 0 4 4l2-2 5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 5 5a2 2 0 0 1 2-2Z"/>',
+ pin:'<path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/>',
+ package:'<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9M8 5.2l8 4.5"/>',
+ box:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8M8 17h4"/>',
+ arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>'
+};
+function svgIcon(name){return '<svg class="jobs-icon-svg" viewBox="0 0 24 24" aria-hidden="true">'+(iconPaths[name]||iconPaths.box)+'</svg>';}
+
 function msg(s,err=false){notice.textContent=s;notice.classList.remove('hidden','error');if(err)notice.classList.add('error')}
 function group(d){if(d.delivery_status==='completed')return'done';if(['picked_up','in_transit','delivered'].includes(d.delivery_status))return'active';return'waiting'}
 function counts(){const c={all:rows.length,waiting:0,active:0,done:0};rows.forEach(d=>c[group(d)]++);[['All','all'],['Waiting','waiting'],['Active','active'],['Done','done']].forEach(([id,k])=>{const a=document.querySelector('#count'+id),b=document.querySelector('#filter'+id);if(a)a.textContent=c[k];if(b)b.textContent=c[k]});}
@@ -25,7 +35,7 @@ function render(){
  driverMaps.forEach(m=>{try{m.remove()}catch(_){}});driverMaps=[];
  counts();
  const visible=rows.filter(d=>activeFilter==='all'||group(d)===activeFilter);
- if(!visible.length){root.innerHTML='<div class="jobs-empty"><span class="jobs-empty-icon">▣</span><h3>'+(rows.length?'Hakuna oda kwenye kichujio hiki':'Bado hujapangiwa oda')+'</h3><p>'+(rows.length?'Badili kichujio ili kuona oda nyingine.':'Oda zitaonekana hapa baada ya muuzaji kukuchagua kupitia mfumo.')+'</p></div>';return;}
+ if(!visible.length){root.innerHTML='<div class="jobs-empty"><span class="jobs-empty-icon">'+svgIcon('box')+'</span><h3>'+(rows.length?'Hakuna oda kwenye kichujio hiki':'Bado hujapangiwa oda')+'</h3><p>'+(rows.length?'Badili kichujio ili kuona oda nyingine.':'Oda zitaonekana hapa baada ya muuzaji kukuchagua kupitia mfumo.')+'</p></div>';return;}
  root.innerHTML=visible.map(card).join('');
  if(window.L){visible.forEach(d=>{if(d.latitude==null||d.longitude==null)return;const node=document.getElementById('driver-map-'+d.delivery_id);if(!node)return;const m=L.map(node,{scrollWheelZoom:false}).setView([Number(d.latitude),Number(d.longitude)],15);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(m);L.marker([Number(d.latitude),Number(d.longitude)]).addTo(m).bindPopup('Eneo la mteja / sehemu ya kufikisha mzigo');driverMaps.push(m);});}
  root.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_pickup',{p_delivery_id:b.dataset.pick,p_note:'Dereva amethibitisha kupokea mzigo.'},'Umethibitisha kupokea mzigo.'));
