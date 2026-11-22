@@ -13,7 +13,7 @@ as $$
     and not exists (
      select 1 from public.delivery_driver_documents doc
      where doc.user_id=p.user_id and doc.document_type=required.doc_type and doc.status='approved'
-      and (doc.expiry_date is null or doc.expiry_date >= current_date)
+      and ((required.doc_type in ('driving_license','vehicle_insurance') and doc.expiry_date is not null and doc.expiry_date >= current_date) or (required.doc_type not in ('driving_license','vehicle_insurance') and (doc.expiry_date is null or doc.expiry_date >= current_date)))
     )
   )
  );
