@@ -17,7 +17,7 @@ async function init(){
  db.from('delivery_driver_applications').select('status,review_note').eq('user_id',user.id).order('submitted_at',{ascending:false}).limit(1).maybeSingle(),
  db.from('delivery_driver_documents').select('document_type,status,expiry_date,review_note').eq('user_id',user.id),
  db.rpc('zune_delivery_driver_queue')]);
- if(de)throw de;if(ape)throw ape;if(dce)throw dce;if(je)throw je;
+ if(de)throw de;if(ape)throw ape;if(dce)throw dce;if(je)console.warn('Driver queue eligibility:',je.message);const queueError=je?.message||null;
  if(!driver){notice(tr('Wasifu wa dereva haujapatikana.','Driver profile was not found.'),true);return}
  const status=driver.status||app?.status||'pending',name=driver.full_name||user.email;
  $('#greeting').innerHTML='<span class="driver-greeting-avatar" id="driverGreetingAvatar" aria-hidden="true"></span>'+esc(tr('Habari, ','Hello, ')+name.split(' ')[0]+'!');if(driver.profile_photo_path){const{data:photo}=await db.storage.from('zune-driver-documents').createSignedUrl(driver.profile_photo_path,3600);if(photo?.signedUrl)$('#driverGreetingAvatar').innerHTML='<img alt="" src="'+esc(photo.signedUrl)+'">';}
@@ -32,6 +32,7 @@ async function init(){
  $('#stats').innerHTML=stat(tr('Hali ya akaunti','Account status'),esc(labels[status]||status),'account')+stat(tr('Oda zinazoendelea','Active deliveries'),active.length,'orders')+stat(tr('Oda zilizokamilika','Completed deliveries'),completed,'done')+stat(tr('Nyaraka zilizoidhinishwa','Approved documents'),approved+'/'+required.length,'docs');
  if(status!=='active')notice(status==='rejected'?tr('Maombi yamekataliwa: ','Application rejected: ')+(app?.review_note||driver.rejection_reason||''):tr('Maombi yako yanasubiri idhini ya Admin. Huwezi kupokea oda bado.','Your application is awaiting Admin approval. You cannot receive deliveries yet.'),status==='rejected');
  else if(missing.length)notice(tr('Kabla ya kupangiwa oda, idhinisha nyaraka hizi: ','Before receiving deliveries, get these documents approved: ')+missing.join(', '));
+ else if(queueError)notice(tr('Huwezi kuona foleni ya oda kwa sasa: ','The delivery queue is unavailable: ')+queueError,true);
  else notice(tr('Akaunti na nyaraka zako ziko tayari. Oda mpya zitaonekana hapa zikikupangiwa.','Your account and documents are approved. New assignments will appear here.'));
  $('#documentStatus').textContent=missing.length?tr('Bado hazijaidhinishwa: ','Still awaiting approval: ')+missing.join(', '):tr('Nyaraka zote za lazima zimeidhinishwa.','All required documents are approved.');
  $('#docsList').innerHTML=required.map(t=>{const d=(docs||[]).find(x=>x.document_type===t);return '<div class="doc-row"><span>'+({national_id:'Kitambulisho cha Taifa',driver_photo:'Picha ya dereva',driving_license:'Leseni/ruhusa',vehicle_registration:'Kadi ya usajili',vehicle_insurance:'Bima ya chombo'}[t])+'</span><b>'+(!d?'Haijapakiwa':d.status==='approved'?'Imeidhinishwa':d.status==='rejected'?'Rudisha tena':'Inasubiri')+'</b></div>'}).join('');
