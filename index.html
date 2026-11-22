@@ -2,57 +2,76 @@
 <html lang="sw">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101d39">
+<meta name="description" content="ZUNE Delivery Driver Portal — simamia kazi zako za delivery, safari na mapato sehemu moja.">
 <title>ZUNE Delivery | Driver Portal</title>
 <link rel="stylesheet" href="./styles.css?v=rebuild-1">
 <link rel="stylesheet" href="./delivery-3d.css?v=20261122-3d-1">
-<link rel="stylesheet" href="./home-landing.css?v=20261122-driver-portal-2">
+<link rel="stylesheet" href="./home-landing.css?v=20261122-driver-portal-3">
 </head>
 <body class="driver-portal">
 <header class="topbar">
-  <a class="brand" href="./index.html" aria-label="ZUNE Delivery home">ⓏⓊⓃⒺ <span>DELIVERY</span></a>
-  <div class="top-actions"><span class="portal-label">DRIVER PORTAL</span><button id="languageBtn" class="ghost" type="button">EN</button><a class="ghost" href="./login.html">Ingia</a></div>
+  <a class="brand" href="./index.html" aria-label="ZUNE Delivery home"><span class="brand-mark">Z</span><span class="brand-name">ZUNE <b>DELIVERY</b></span></a>
+  <nav class="top-actions" aria-label="Main navigation">
+    <span class="portal-label">DRIVER PORTAL</span>
+    <button id="languageBtn" class="language-toggle" type="button" aria-label="Change language">EN</button>
+    <a class="top-login" href="./login.html" data-sw="Ingia" data-en="Sign in">Ingia</a>
+  </nav>
 </header>
 <main class="shell">
-<section class="hero driver-hero">
-  <div class="hero-copy">
-    <p class="eyebrow">ZUNE DRIVER NETWORK</p>
-    <h1>Endesha. Peleka.<br><em>Pata kipato.</em></h1>
-    <p class="muted">Simamia safari zako, pokea kazi za delivery na fuatilia mapato yako kupitia mfumo mmoja wa ZUNE.</p>
-    <div class="application-actions"><a class="primary" href="./login.html">Ingia kwenye Driver Account</a><a class="ghost" href="./signup.html">Jiunge kama dereva</a></div>
-    <p class="hero-note"><span class="status-dot"></span> Mfumo mmoja wa kusimamia kazi zako za delivery</p>
-  </div>
-  <div class="hero-workspace" aria-label="Muhtasari wa huduma za dereva">
-    <div class="workspace-top"><span>DRIVER WORKSPACE</span><span class="workspace-live">● READY</span></div>
-    <div class="workspace-orbit"><div class="orbit-ring"></div><div class="orbit-core">Ⓩ</div><span class="orbit-chip chip-one">GPS</span><span class="orbit-chip chip-two">DELIVERY</span><span class="orbit-chip chip-three">EARNINGS</span></div>
-    <div class="workspace-bottom"><span><b>01</b> Manage jobs</span><span><b>02</b> Track progress</span></div>
-  </div>
-</section>
-<section class="section-heading"><p class="eyebrow">YOUR DRIVER TOOLKIT</p><h2>Kila kitu cha kazi yako, sehemu moja.</h2><p class="muted">Zana muhimu za kukusaidia kufanya delivery kwa mpangilio na uwazi.</p></section>
-<section class="grid-cards driver-features">
-  <article class="panel feature-card"><span class="feature-icon">▣</span><span class="pill">01 · KAZI</span><h2>Delivery Management</h2><p class="muted">Angalia kazi ulizopangiwa na simamia hatua za pickup, safari na kukabidhi mzigo.</p><a class="text-link" href="./login.html">Fungua akaunti <span>→</span></a></article>
-  <article class="panel feature-card"><span class="feature-icon">◈</span><span class="pill">02 · MAPATO</span><h2>Mapato na Malipo</h2><p class="muted">Fuatilia mapato yako, malipo yaliyokamilika na historia ya miamala.</p><a class="text-link" href="./login.html">Angalia akaunti <span>→</span></a></article>
-  <article class="panel feature-card"><span class="feature-icon">⌖</span><span class="pill">03 · GPS</span><h2>GPS na Safari</h2><p class="muted">Shiriki eneo lako wakati wa kazi ili safari na hatua za delivery zionekane.</p><a class="text-link" href="./login.html">Ingia kuendelea <span>→</span></a></article>
-  <article class="panel feature-card"><span class="feature-icon">◇</span><span class="pill">04 · AKAUNTI</span><h2>Uthibitishaji wa Dereva</h2><p class="muted">Wasilisha na simamia nyaraka zinazohitajika kwa akaunti yako ya udereva.</p><a class="text-link" href="./signup.html">Anza usajili <span>→</span></a></article>
-  <article class="panel feature-card"><span class="feature-icon">↗</span><span class="pill">05 · MAENDELEO</span><h2>Driver Performance</h2><p class="muted">Fuatilia kazi ulizokamilisha na maendeleo ya shughuli zako.</p><a class="text-link" href="./login.html">Fungua akaunti <span>→</span></a></article>
-  <article class="panel feature-card"><span class="feature-icon">◉</span><span class="pill">06 · MSAADA</span><h2>Wasifu na Msaada</h2><p class="muted">Simamia taarifa zako za dereva na pata msaada unapouhitaji.</p><a class="text-link" href="./login.html">Ingia kwenye akaunti <span>→</span></a></article>
-</section>
-<section class="join-panel"><div><p class="eyebrow">READY TO DRIVE WITH ZUNE?</p><h2>Safari yako inaanzia hapa.</h2><p class="muted">Fungua akaunti ya dereva, jaza taarifa zako na wasilisha nyaraka kwa ajili ya uthibitishaji.</p></div><a class="primary" href="./signup.html">Jiunge kama dereva <span>→</span></a></section>
-<footer><span>© ZUNE Delivery · Driver Portal</span><span>Dereva · Delivery · GPS · Malipo</span></footer>
+  <section class="hero driver-hero">
+    <div class="hero-copy">
+      <p class="eyebrow" data-sw="MTANDAO WA MADEREVA WA ZUNE" data-en="ZUNE DRIVER NETWORK">MTANDAO WA MADEREVA WA ZUNE</p>
+      <h1 data-sw="Endesha. Peleka.<br><em>Pata kipato.</em>" data-en="Drive. Deliver.<br><em>Earn with ZUNE.</em>">Endesha. Peleka.<br><em>Pata kipato.</em></h1>
+      <p class="hero-description" data-sw="Simamia safari zako, pokea kazi za delivery na fuatilia mapato yako kupitia mfumo mmoja wa ZUNE." data-en="Manage your routes, receive delivery jobs and follow your earnings in one ZUNE driver workspace.">Simamia safari zako, pokea kazi za delivery na fuatilia mapato yako kupitia mfumo mmoja wa ZUNE.</p>
+      <div class="application-actions">
+        <a class="primary" href="./login.html" data-sw="Ingia kwenye Driver Account" data-en="Sign in to Driver Account">Ingia kwenye Driver Account <span aria-hidden="true">→</span></a>
+        <a class="ghost" href="./signup.html" data-sw="Jiunge kama dereva" data-en="Register as a driver">Jiunge kama dereva</a>
+      </div>
+      <p class="hero-note"><span class="status-dot"></span><span data-sw="Mfumo mmoja wa kusimamia kazi zako za delivery" data-en="One workspace for your delivery work">Mfumo mmoja wa kusimamia kazi zako za delivery</span></p>
+    </div>
+    <div class="hero-workspace" aria-label="Driver workspace overview">
+      <div class="workspace-top"><span>DRIVER WORKSPACE</span><span class="workspace-live"><i></i> READY</span></div>
+      <div class="workspace-scene">
+        <div class="scene-glow"></div><div class="scene-ring ring-a"></div><div class="scene-ring ring-b"></div>
+        <div class="scene-cube"><span>Z</span></div>
+        <div class="scene-tag tag-gps"><b>⌖</b> LIVE GPS</div>
+        <div class="scene-tag tag-jobs"><b>▣</b> DELIVERY JOBS</div>
+        <div class="scene-tag tag-pay"><b>◈</b> EARNINGS</div>
+      </div>
+      <div class="workspace-bottom"><span><b>01</b> <span data-sw="Simamia kazi" data-en="Manage jobs">Simamia kazi</span></span><span><b>02</b> <span data-sw="Fuatilia safari" data-en="Track progress">Fuatilia safari</span></span></div>
+    </div>
+  </section>
+
+  <section class="section-heading">
+    <p class="eyebrow" data-sw="ZANA ZA DEREVA" data-en="YOUR DRIVER TOOLKIT">ZANA ZA DEREVA</p>
+    <h2 data-sw="Kila kitu cha kazi yako, sehemu moja." data-en="Everything you need for your delivery work.">Kila kitu cha kazi yako, sehemu moja.</h2>
+    <p class="muted" data-sw="Zana muhimu za kukusaidia kufanya delivery kwa mpangilio na uwazi." data-en="Tools to help you complete deliveries with clarity and control.">Zana muhimu za kukusaidia kufanya delivery kwa mpangilio na uwazi.</p>
+  </section>
+
+  <section class="grid-cards driver-features" aria-label="Driver features">
+    <article class="panel feature-card"><span class="feature-icon">▣</span><span class="pill">01 · KAZI</span><h2 data-sw="Delivery Management" data-en="Delivery Management">Delivery Management</h2><p data-sw="Angalia kazi ulizopangiwa na simamia hatua za pickup, safari na kukabidhi mzigo." data-en="View assigned jobs and manage pickup, transit and delivery handover.">Angalia kazi ulizopangiwa na simamia hatua za pickup, safari na kukabidhi mzigo.</p><a class="text-link" href="./login.html" data-sw="Fungua akaunti →" data-en="Open your account →">Fungua akaunti →</a></article>
+    <article class="panel feature-card"><span class="feature-icon">◈</span><span class="pill">02 · MAPATO</span><h2 data-sw="Mapato na Malipo" data-en="Earnings & Payments">Mapato na Malipo</h2><p data-sw="Fuatilia mapato yako, malipo yaliyokamilika na historia ya miamala." data-en="Review your earnings, completed payments and transaction history.">Fuatilia mapato yako, malipo yaliyokamilika na historia ya miamala.</p><a class="text-link" href="./login.html" data-sw="Angalia akaunti →" data-en="View account →">Angalia akaunti →</a></article>
+    <article class="panel feature-card"><span class="feature-icon">⌖</span><span class="pill">03 · GPS</span><h2 data-sw="GPS na Safari" data-en="GPS & Routes">GPS na Safari</h2><p data-sw="Shiriki eneo lako wakati wa kazi ili hatua za delivery zionekane." data-en="Share your location while working so delivery progress can be followed.">Shiriki eneo lako wakati wa kazi ili hatua za delivery zionekane.</p><a class="text-link" href="./login.html" data-sw="Ingia kuendelea →" data-en="Sign in to continue →">Ingia kuendelea →</a></article>
+    <article class="panel feature-card"><span class="feature-icon">◇</span><span class="pill">04 · AKAUNTI</span><h2 data-sw="Uthibitishaji wa Dereva" data-en="Driver Verification">Uthibitishaji wa Dereva</h2><p data-sw="Wasilisha na simamia nyaraka zinazohitajika kwa akaunti yako ya udereva." data-en="Submit and manage the documents required for your driver account.">Wasilisha na simamia nyaraka zinazohitajika kwa akaunti yako ya udereva.</p><a class="text-link" href="./signup.html" data-sw="Anza usajili →" data-en="Start registration →">Anza usajili →</a></article>
+    <article class="panel feature-card"><span class="feature-icon">↗</span><span class="pill">05 · MAENDELEO</span><h2 data-sw="Driver Performance" data-en="Driver Performance">Driver Performance</h2><p data-sw="Fuatilia delivery ulizokamilisha na maendeleo ya shughuli zako." data-en="Review completed deliveries and your work performance.">Fuatilia delivery ulizokamilisha na maendeleo ya shughuli zako.</p><a class="text-link" href="./login.html" data-sw="Fungua akaunti →" data-en="Open your account →">Fungua akaunti →</a></article>
+    <article class="panel feature-card"><span class="feature-icon">◉</span><span class="pill">06 · MSAADA</span><h2 data-sw="Wasifu na Msaada" data-en="Profile & Support">Wasifu na Msaada</h2><p data-sw="Simamia taarifa zako za dereva na pata msaada unapouhitaji." data-en="Manage your driver details and get help when you need it.">Simamia taarifa zako za dereva na pata msaada unapouhitaji.</p><a class="text-link" href="./login.html" data-sw="Ingia kwenye akaunti →" data-en="Sign in to your account →">Ingia kwenye akaunti →</a></article>
+  </section>
+
+  <section class="join-panel">
+    <div><p class="eyebrow" data-sw="JIUNGE NA ZUNE DELIVERY" data-en="DRIVE WITH ZUNE DELIVERY">JIUNGE NA ZUNE DELIVERY</p><h2 data-sw="Safari yako inaanzia hapa." data-en="Your journey starts here.">Safari yako inaanzia hapa.</h2><p class="muted" data-sw="Fungua akaunti ya dereva, jaza taarifa zako na wasilisha nyaraka zinazohitajika kwa uthibitishaji." data-en="Create a driver account, complete your details and submit the required documents for verification.">Fungua akaunti ya dereva, jaza taarifa zako na wasilisha nyaraka zinazohitajika kwa uthibitishaji.</p></div>
+    <a class="primary" href="./signup.html" data-sw="Jiunge kama dereva →" data-en="Register as a driver →">Jiunge kama dereva →</a>
+  </section>
+  <footer><span>© <span id="year"></span> ZUNE Delivery · Driver Portal</span><span data-sw="Dereva · Delivery · GPS · Malipo" data-en="Drivers · Deliveries · GPS · Payments">Dereva · Delivery · GPS · Malipo</span></footer>
 </main>
 <script>
-const b=document.querySelector('#languageBtn');
-b.addEventListener('click',()=>{
- const en=document.documentElement.lang==='sw';
- document.documentElement.lang=en?'en':'sw';
- document.querySelector('.hero h1').innerHTML=en?'Drive. Deliver.<br><em>Earn with ZUNE.</em>':'Endesha. Peleka.<br><em>Pata kipato.</em>';
- document.querySelector('.hero .muted').textContent=en?'Manage your routes, receive delivery jobs and follow your earnings in one ZUNE driver workspace.':'Simamia safari zako, pokea kazi za delivery na fuatilia mapato yako kupitia mfumo mmoja wa ZUNE.';
- document.querySelector('.section-heading h2').textContent=en?'Everything you need for your delivery work.':'Kila kitu cha kazi yako, sehemu moja.';
- document.querySelector('.section-heading .muted').textContent=en?'Tools to help you complete deliveries with clarity and control.':'Zana muhimu za kukusaidia kufanya delivery kwa mpangilio na uwazi.';
- document.querySelector('.join-panel h2').textContent=en?'Your journey starts here.':'Safari yako inaanzia hapa.';
- document.querySelector('.join-panel .muted').textContent=en?'Create a driver account, complete your details and submit the required documents for verification.':'Fungua akaunti ya dereva, jaza taarifa zako na wasilisha nyaraka kwa ajili ya uthibitishaji.';
- document.querySelectorAll('.application-actions a')[0].textContent=en?'Sign in to Driver Account':'Ingia kwenye Driver Account';
- document.querySelectorAll('.application-actions a')[1].textContent=en?'Register as a driver':'Jiunge kama dereva';
- b.textContent=en?'SW':'EN';
-});
+const langButton=document.getElementById('languageBtn');
+function setLanguage(lang){
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-sw][data-en]').forEach(el=>{el.innerHTML=el.dataset[lang];});
+  langButton.textContent=lang==='sw'?'EN':'SW';
+  langButton.setAttribute('aria-label',lang==='sw'?'Switch to English':'Badili kwenda Kiswahili');
+}
+langButton.addEventListener('click',()=>setLanguage(document.documentElement.lang==='sw'?'en':'sw'));
+document.getElementById('year').textContent=new Date().getFullYear();
 </script>
 </body></html>
