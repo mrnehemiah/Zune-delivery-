@@ -13,14 +13,14 @@ async function init(){
  const{data:{session},error:ae}=await db.auth.getSession();if(ae)throw ae;if(!session){location.replace('./login.html');return}
  const user=session.user;
  const [{data:driver,error:de},{data:app,error:ape},{data:docs,error:dce},{data:jobs,error:je}]=await Promise.all([
- db.from('delivery_driver_profiles').select('user_id,full_name,phone_number,vehicle_type,status,rejection_reason').eq('user_id',user.id).maybeSingle(),
+ db.from('delivery_driver_profiles').select('user_id,full_name,phone_number,vehicle_type,status,rejection_reason,profile_photo_path').eq('user_id',user.id).maybeSingle(),
  db.from('delivery_driver_applications').select('status,review_note').eq('user_id',user.id).order('submitted_at',{ascending:false}).limit(1).maybeSingle(),
  db.from('delivery_driver_documents').select('document_type,status,expiry_date,review_note').eq('user_id',user.id),
  db.rpc('zune_delivery_driver_queue')]);
  if(de)throw de;if(ape)throw ape;if(dce)throw dce;if(je)throw je;
  if(!driver){notice(tr('Wasifu wa dereva haujapatikana.','Driver profile was not found.'),true);return}
  const status=driver.status||app?.status||'pending',name=driver.full_name||user.email;
- $('#greeting').textContent=tr('Habari, ','Hello, ')+name.split(' ')[0]+'!';
+ $('#greeting').innerHTML='<span class="driver-greeting-avatar" id="driverGreetingAvatar" aria-hidden="true"></span>'+esc(tr('Habari, ','Hello, ')+name.split(' ')[0]+'!');if(driver.profile_photo_path){const{data:photo}=await db.storage.from('zune-driver-documents').createSignedUrl(driver.profile_photo_path,3600);if(photo?.signedUrl)$('#driverGreetingAvatar').innerHTML='<img alt="" src="'+esc(photo.signedUrl)+'">';}
  $('#statusText').innerHTML='<span class="status '+(status==='active'?'':status==='pending'?'pending':'bad')+'">'+esc(labels[status]||status)+'</span><span class="hero-status-copy">'+(status==='active'?tr(' Akaunti yako iko tayari kwa shughuli za delivery.',' Your account is ready for delivery activity.'):tr(' Kamilisha hatua za uhakiki ili uweze kupokea oda.',' Complete verification to become eligible for delivery assignments.'))+'</span>';
  const active=(jobs||[]).filter(j=>!['completed','cancelled'].includes(j.delivery_status));
  const completed=(jobs||[]).filter(j=>['completed','delivered'].includes(j.delivery_status)).length;
