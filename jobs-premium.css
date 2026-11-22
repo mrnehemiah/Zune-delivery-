@@ -29,3 +29,18 @@
 @media(max-width:900px){.jobs-list{grid-template-columns:1fr}.jobs-hero-art{right:3%;opacity:.7}.jobs-overview{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.driver-jobs .topbar{height:62px;padding:0 14px}.jobs-secure-label{display:none}.jobs-shell{padding:15px 13px 100px}.jobs-hero{min-height:225px;padding:23px 20px;border-radius:20px}.jobs-hero h1{font-size:29px;max-width:75%}.jobs-hero-copy{position:relative;z-index:2}.jobs-hero p:not(.jobs-kicker){max-width:75%;font-size:10px}.jobs-hero-art{right:-47px;top:58%;transform:translateY(-50%) scale(.75);opacity:.48}.jobs-hero-meta{margin-top:17px;gap:8px;font-size:8px;max-width:76%}.jobs-overview{gap:9px;margin:14px 0 23px}.jobs-stat{padding:12px;gap:8px;border-radius:14px}.jobs-stat-icon{width:34px;height:34px;flex-basis:34px;border-radius:11px;font-size:16px}.jobs-stat small{font-size:8px}.jobs-stat strong{font-size:20px}.jobs-toolbar{align-items:flex-start;flex-direction:column;gap:12px}.jobs-toolbar h2{font-size:18px}.jobs-toolbar-actions{width:100%}.jobs-updated{margin-right:auto}.jobs-refresh,.jobs-logout{padding:9px 10px}.jobs-filters{margin-right:-13px}.jobs-card-head{padding:13px 13px 11px}.jobs-card-body{padding:13px}.jobs-card-actions{padding:11px 13px 14px}.jobs-map-wrap{padding:0 13px 13px}.driver-destination-map{height:175px}.jobs-footer{flex-direction:column}.application-card.jobs-card:hover{transform:none}}
 @media(prefers-reduced-motion:reduce){.jobs-cube,.jobs-spinner{animation:none}.application-card.jobs-card,.jobs-refresh{transition:none}}
+
+/* Refined icon system: crisp outlined glyphs with dimensional icon wells */
+.jobs-stat-icon,.jobs-detail-icon,.jobs-avatar,.jobs-empty-icon{position:relative;isolation:isolate}
+.jobs-stat-icon svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 1px #07315c66)}
+.jobs-detail-icon{width:31px;height:31px;flex-basis:31px;border-radius:10px;background:linear-gradient(145deg,#f7fcff,#dcecff);box-shadow:0 3px 0 #c8dcef,0 6px 12px #174b7815,inset 0 1px #fff;color:#2875b9}
+.jobs-detail-icon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.jobs-avatar{width:42px;height:42px;flex-basis:42px;border-radius:14px;background:linear-gradient(145deg,#9beaff 0%,#398fdc 48%,#164b8a 100%);box-shadow:0 4px 0 #174b82,0 9px 16px #1d5d9635,inset 0 1px 2px #fff9;color:#fff}
+.jobs-avatar svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.jobs-empty-icon svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.jobs-refresh-icon{display:inline-grid;place-items:center;vertical-align:middle}
+.jobs-refresh-icon svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.jobs-icon-svg{display:block}
+.jobs-detail-line{align-items:center}
+.jobs-stat-icon:after,.jobs-detail-icon:after,.jobs-avatar:after{content:"";position:absolute;inset:1px;border-radius:inherit;border-top:1px solid #ffffff65;pointer-events:none}
+@media(max-width:650px){.jobs-detail-icon{width:29px;height:29px;flex-basis:29px}.jobs-avatar{width:39px;height:39px;flex-basis:39px}}
