@@ -46,7 +46,8 @@ function notice(message, error = false) {
   el.classList.remove('hidden','error');
   if (error) el.classList.add('error');
 }
-function methodLabel(method) { return ({mpesa:'M-Pesa',airtel_money:'Airtel Money',mixx_by_yas:'Mixx by Yas',halopesa:'HaloPesa',bank:lang==='sw'?'Benki':'Bank',cash:'Cash',manual:'Manual'})[method] || '—'; }\nfunction statusLabel(status) {
+function methodLabel(method) { return ({mpesa:'M-Pesa',airtel_money:'Airtel Money',mixx_by_yas:'Mixx by Yas',halopesa:'HaloPesa',bank:lang==='sw'?'Benki':'Bank',cash:'Cash',manual:'Manual'})[method] || '—'; }
+function statusLabel(status) {
   return ({paid:t('paidStatus'),pending:t('pendingStatus'),processing:t('processingStatus'),rejected:t('rejectedStatus')})[status] || t('unknown');
 }
 function setLanguage() {
