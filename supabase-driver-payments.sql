@@ -44,89 +44,63 @@ create policy zune_driver_payment_admin_update
 grant select, insert, update on public.zune_driver_payment_records to authenticated;
 
 create or replace function public.zune_driver_payment_dashboard()
-returns jsonb
-language plpgsql
-security definer
-set search_path = ''
-as $$
+returns jsonb language plpgsql security definer set search_path = '' as $$
 declare
-  v_uid uuid := auth.uid();
-  v_earned numeric(14,2) := 0;
-  v_paid numeric(14,2) := 0;
-  v_paid_gross numeric(14,2) := 0;
-  v_pending numeric(14,2) := 0;
-  v_delivery_count integer := 0;
-  v_payments jsonb := '[]'::jsonb;
-  v_deliveries jsonb := '[]'::jsonb;
+ v_uid uuid:=auth.uid();
+ v_gross_earned numeric(14,2):=0;
+ v_commission numeric(14,2):=0;
+ v_earned numeric(14,2):=0;
+ v_paid numeric(14,2):=0;
+ v_pending numeric(14,2):=0;
+ v_delivery_count integer:=0;
+ v_payments jsonb:='[]'::jsonb;
+ v_deliveries jsonb:='[]'::jsonb;
 begin
-  if v_uid is null then raise exception 'Tafadhali ingia kwanza.'; end if;
-  if not exists (
-    select 1 from public.delivery_driver_profiles p
-    where p.user_id = v_uid and p.status = 'active'
-  ) then raise exception 'Akaunti hii si dereva aliyeidhinishwa wa ZUNE Delivery.'; end if;
+ if v_uid is null then raise exception 'Tafadhali ingia kwanza.'; end if;
+ if not exists(select 1 from public.delivery_driver_profiles p where p.user_id=v_uid and p.status='active') then
+  raise exception 'Akaunti hii si dereva aliyeidhinishwa wa ZUNE Delivery.';
+ end if;
 
-  select coalesce(sum(d.driver_payout_amount),0), count(*)
-    into v_earned, v_delivery_count
-  from public.order_deliveries d
-  where d.assigned_driver_id = v_uid
-    and d.status = 'completed'
-    and d.buyer_confirmed_at is not null
-;
+ -- Only explicit Admin-entered deductions are counted; no hidden default commission.
+ select coalesce(sum(d.driver_payout_amount),0),coalesce(sum(coalesce(p.deduction,0)),0),count(*)
+ into v_gross_earned,v_commission,v_delivery_count
+ from public.order_deliveries d
+ left join public.zune_driver_payment_records p on p.delivery_id=d.id
+ where d.assigned_driver_id=v_uid and d.status='completed' and d.buyer_confirmed_at is not null;
 
-  select coalesce(sum(p.net_amount),0), coalesce(sum(p.amount),0)
-    into v_paid, v_paid_gross
-  from public.zune_driver_payment_records p
-  where p.driver_id = v_uid and p.status = 'paid';
+ v_earned:=greatest(v_gross_earned-v_commission,0);
+ select coalesce(sum(p.net_amount),0) into v_paid
+ from public.zune_driver_payment_records p where p.driver_id=v_uid and p.status='paid';
+ v_pending:=greatest(v_earned-v_paid,0);
 
-  v_pending := greatest(v_earned - v_paid_gross, 0);
+ select coalesce(jsonb_agg(x.obj order by x.created_at desc),'[]'::jsonb) into v_payments
+ from (
+  select jsonb_build_object('id',p.id,'delivery_id',p.delivery_id,'amount',p.amount,
+   'deduction',p.deduction,'net_amount',p.net_amount,'payment_method',p.payment_method,
+   'payment_phone',p.payment_phone,'transaction_reference',p.transaction_reference,
+   'status',p.status,'admin_note',p.admin_note,'created_at',p.created_at,'paid_at',p.paid_at) obj,p.created_at
+  from public.zune_driver_payment_records p where p.driver_id=v_uid
+  order by p.created_at desc limit 100
+ ) x;
 
-  select coalesce(jsonb_agg(x.obj order by x.created_at desc), '[]'::jsonb)
-    into v_payments
-  from (
-    select jsonb_build_object(
-      'id', p.id, 'delivery_id', p.delivery_id, 'amount', p.amount,
-      'deduction', p.deduction, 'net_amount', p.net_amount,
-      'payment_method', p.payment_method, 'payment_phone', p.payment_phone,
-      'transaction_reference', p.transaction_reference, 'status', p.status,
-      'admin_note', p.admin_note, 'created_at', p.created_at, 'paid_at', p.paid_at
-    ) as obj, p.created_at
-    from public.zune_driver_payment_records p
-    where p.driver_id = v_uid
-    order by p.created_at desc
-    limit 100
-  ) x;
+ select coalesce(jsonb_agg(x.obj order by x.created_at desc),'[]'::jsonb) into v_deliveries
+ from (
+  select jsonb_build_object('id',d.id,'status',d.status,'delivery_fee',d.delivery_fee,
+   'driver_payout_amount',d.driver_payout_amount,'zune_delivery_amount',d.zune_delivery_amount,
+   'payout_status',d.payout_status,'created_at',d.created_at,
+   'buyer_confirmed_at',d.buyer_confirmed_at) obj,d.created_at
+  from public.order_deliveries d where d.assigned_driver_id=v_uid and d.status in ('completed','delivered')
+  order by d.created_at desc limit 100
+ ) x;
 
-  select coalesce(jsonb_agg(x.obj order by x.created_at desc), '[]'::jsonb)
-    into v_deliveries
-  from (
-    select jsonb_build_object(
-      'id', d.id, 'status', d.status, 'delivery_fee', d.delivery_fee,
-      'driver_payout_amount', d.driver_payout_amount,
-      'payout_status', d.payout_status, 'created_at', d.created_at,
-      'buyer_confirmed_at', d.buyer_confirmed_at
-    ) as obj, d.created_at
-    from public.order_deliveries d
-    where d.assigned_driver_id = v_uid
-      and d.status in ('completed','delivered')
-    order by d.created_at desc
-    limit 100
-  ) x;
-
-  return jsonb_build_object(
-    'currency','TZS',
-    'totals', jsonb_build_object(
-      'earned',v_earned,'paid',v_paid,'pending',v_pending,
-      'completed_deliveries',v_delivery_count
-    ),
-    'payments',v_payments,
-    'deliveries',v_deliveries
-  );
+ return jsonb_build_object('currency','TZS','totals',jsonb_build_object(
+  'gross_earned',v_gross_earned,'commission',v_commission,'earned',v_earned,
+  'paid',v_paid,'pending',v_pending,'completed_deliveries',v_delivery_count),
+  'payments',v_payments,'deliveries',v_deliveries);
 end;
 $$;
-
-revoke all on function public.zune_driver_payment_dashboard() from public, anon;
+revoke all on function public.zune_driver_payment_dashboard() from public,anon;
 grant execute on function public.zune_driver_payment_dashboard() to authenticated;
-
 
 -- Admin-only recorder used by the separate ZUNE Admin dashboard integration.
 -- One payment record per delivery prevents duplicate payouts.
