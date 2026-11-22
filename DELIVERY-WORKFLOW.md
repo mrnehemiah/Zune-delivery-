@@ -32,3 +32,11 @@ Driver accounts are created with Supabase Auth. After email confirmation (if ena
 ## GPS and operational limitations
 - Live GPS updates are sent every 20 seconds only while the delivery page is open, visible and the driver grants location permission. This portal does not claim background tracking.
 - The driver wallet is read-only for drivers. Admin records payouts; there is no driver withdrawal request or automated payout rail in this portal.
+
+## Driver notifications
+- `notifications.html` is the live notification inbox. It reads the existing `public.notifications` table under its owner-scoped RLS policies.
+- Drivers can filter all/unread/read notifications, mark one or all as read, open the related portal page, and delete their own notification.
+- The unread badge is shared across the driver's mobile navigation and updates through Supabase Realtime.
+- Database triggers create notifications for delivery assignment/status changes, driver application review, document review, vehicle-change review and recorded driver payouts.
+- Notifications are in-app only. Push, SMS and email delivery are not claimed by this portal.
+- Database SQL source: `supabase-driver-notifications.sql`.
