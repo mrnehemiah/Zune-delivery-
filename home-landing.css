@@ -28,3 +28,41 @@
 .driver-portal footer{margin-top:28px;padding-top:20px;border-top:1px solid #d7e3f1;color:#74839a;font-size:11px;display:flex;justify-content:space-between;gap:12px}
 @media(max-width:800px){.driver-portal .driver-hero{grid-template-columns:1fr;gap:25px}.driver-portal .hero-workspace{min-height:290px;transform:none}.driver-portal .driver-features{grid-template-columns:repeat(2,minmax(0,1fr))}.driver-portal .join-panel{align-items:flex-start;flex-direction:column}}
 @media(max-width:560px){.driver-portal .topbar{padding:10px 14px;min-height:68px}.driver-portal .brand{font-size:16px}.driver-portal .brand span{font-size:9px}.portal-label{display:none}.driver-portal .shell{padding:20px 13px 38px}.driver-portal .driver-hero{padding:28px 21px;border-radius:23px;min-height:0}.driver-portal .hero h1{font-size:43px}.driver-portal .hero .muted{font-size:15px}.driver-portal .application-actions{display:grid;grid-template-columns:1fr}.driver-portal .application-actions a{width:100%}.driver-portal .hero-workspace{padding:16px;min-height:270px}.workspace-orbit{height:205px}.orbit-ring{width:165px;height:165px}.orbit-core{width:88px;height:88px;font-size:46px}.driver-portal .section-heading{margin:42px auto 21px}.driver-portal .driver-features{grid-template-columns:1fr;gap:14px}.driver-portal .driver-features .feature-card{min-height:0;padding:22px}.driver-portal .join-panel{padding:25px 22px}.driver-portal .join-panel>.primary{width:100%}.driver-portal footer{flex-direction:column;font-size:10px}}
+
+
+/* Driver portal refinement: cohesive 3D identity, accessible controls and responsive scene */
+.driver-portal{background:radial-gradient(ellipse at 78% 4%,#d9ebff 0,transparent 30%),radial-gradient(ellipse at 8% 42%,#e5f4ff 0,transparent 26%),linear-gradient(180deg,#f7faff 0%,#edf3fb 100%)}
+.driver-portal .topbar{position:relative;z-index:5}
+.driver-portal .brand{display:flex;align-items:center;gap:10px;letter-spacing:0}
+.driver-portal .brand-mark{width:37px;height:37px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#65e8f7,#2876df);color:#10274b;font-size:23px;font-weight:1000;box-shadow:0 4px 0 #174b91,0 9px 18px #02081745,inset 0 1px #ffffffb0}
+.driver-portal .brand-name{font-size:15px;letter-spacing:.12em}.driver-portal .brand-name b{display:block;color:#91eaff;font-size:9px;letter-spacing:.25em;margin-top:2px}
+.driver-portal .top-actions{gap:14px}
+.driver-portal .language-toggle,.driver-portal .top-login{min-height:40px;padding:9px 14px;border:1px solid #ffffff38;border-radius:12px;background:#ffffff0d;color:#fff;font:inherit;font-size:12px;font-weight:800;text-decoration:none;cursor:pointer}
+.driver-portal .top-login{background:linear-gradient(180deg,#e4faff,#9cddff);color:#10274b;border-color:#ffffff80;box-shadow:0 3px 0 #24518a}
+.driver-portal .driver-hero{isolation:isolate}
+.driver-portal .hero-description{max-width:520px;color:#d3e1f5;font-size:17px;line-height:1.7;margin:0 0 27px}
+.driver-portal .application-actions a{transition:transform .2s ease,filter .2s ease,box-shadow .2s ease}
+.driver-portal .application-actions a:hover,.driver-portal .join-panel>.primary:hover{transform:translateY(-3px);filter:brightness(1.06)}
+.driver-portal .hero-workspace{display:flex;flex-direction:column;justify-content:space-between}
+.driver-portal .workspace-scene{height:245px;position:relative;display:grid;place-items:center;overflow:hidden}
+.driver-portal .scene-glow{position:absolute;width:180px;height:180px;border-radius:50%;background:#22d3ee25;filter:blur(28px)}
+.driver-portal .scene-ring{position:absolute;border:1px solid #8be9ff65;border-radius:50%;box-shadow:0 0 30px #38bdf820,inset 0 0 24px #38bdf812}
+.driver-portal .ring-a{width:190px;height:190px;transform:rotateX(65deg) rotateZ(-22deg)}
+.driver-portal .ring-b{width:155px;height:155px;transform:rotateY(65deg) rotateZ(28deg);border-color:#60a5fa70}
+.driver-portal .scene-cube{position:relative;width:104px;height:104px;display:grid;place-items:center;border-radius:28px;background:linear-gradient(145deg,#70eaff 0%,#3188ed 48%,#173d83 100%);color:#fff;font-size:55px;font-weight:1000;text-shadow:0 3px 10px #09234c88;box-shadow:0 12px 0 #102b5b,0 28px 35px #02081788,inset 0 2px 4px #ffffffb0;transform:perspective(500px) rotateX(12deg) rotateY(-17deg) rotateZ(-7deg)}
+.driver-portal .scene-tag{position:absolute;z-index:2;padding:9px 11px;border:1px solid #9ceaff55;border-radius:11px;background:linear-gradient(145deg,#234979,#102344);color:#d9faff;font-size:9px;font-weight:900;letter-spacing:.09em;box-shadow:0 7px 16px #02081770,inset 0 1px #ffffff35}
+.driver-portal .scene-tag b{color:#7deaff;margin-right:5px;font-size:13px}
+.driver-portal .tag-gps{top:20px;right:4%}.driver-portal .tag-jobs{left:0;bottom:25px}.driver-portal .tag-pay{right:0;bottom:12px}
+.driver-portal .workspace-live{display:flex;align-items:center;gap:6px}.driver-portal .workspace-live i{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 4px #4ade8020}
+.driver-portal .workspace-bottom{width:100%}
+.driver-portal .driver-features .feature-card{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.driver-portal .driver-features .feature-card:hover{transform:translateY(-6px);border-color:#a9d4ff;box-shadow:0 10px 0 #c8dcf4,0 24px 38px #18365b20,inset 0 1px #fff}
+.driver-portal .feature-icon{flex:0 0 auto}
+.driver-portal .feature-card .text-link{display:inline-flex;align-items:center;gap:6px}
+.driver-portal .join-panel{position:relative;overflow:hidden}
+.driver-portal .join-panel:after{content:"Z";position:absolute;right:24%;top:-55px;font-size:220px;line-height:1;font-weight:1000;color:#ffffff08;pointer-events:none}
+.driver-portal .join-panel>div,.driver-portal .join-panel>.primary{position:relative;z-index:1}
+.driver-portal footer{padding-bottom:8px}
+@media(max-width:800px){.driver-portal .scene-tag{font-size:8px}.driver-portal .join-panel:after{right:4%}}
+@media(max-width:560px){.driver-portal .brand-mark{width:33px;height:33px}.driver-portal .brand-name{font-size:13px}.driver-portal .top-actions{gap:7px}.driver-portal .language-toggle,.driver-portal .top-login{padding:8px 11px}.driver-portal .hero-description{font-size:15px}.driver-portal .workspace-scene{height:220px}.driver-portal .scene-cube{width:88px;height:88px;font-size:46px}.driver-portal .ring-a{width:165px;height:165px}.driver-portal .ring-b{width:138px;height:138px}.driver-portal .tag-gps{right:0}.driver-portal .tag-jobs{left:0}.driver-portal .tag-pay{right:0;bottom:8px}}
+@media(prefers-reduced-motion:reduce){.driver-portal .application-actions a,.driver-portal .join-panel>.primary,.driver-portal .driver-features .feature-card{transition:none}.driver-portal .application-actions a:hover,.driver-portal .join-panel>.primary:hover,.driver-portal .driver-features .feature-card:hover{transform:none}}
