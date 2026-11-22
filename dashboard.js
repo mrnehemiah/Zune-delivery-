@@ -26,7 +26,7 @@ async function init(){
  const completed=(jobs||[]).filter(j=>j.delivery_status==='completed').length;
  const today=new Date().toISOString().slice(0,10);
  const requiredForDriver=required.filter(t=>!(t==='driving_license'&&driver.vehicle_type==='bicycle'));
- const isCurrentApproved=d=>d.status==='approved'&&(!d.expiry_date||d.expiry_date>=today);
+ const isCurrentApproved=d=>d.status==='approved'&&(['driving_license','vehicle_insurance'].includes(d.document_type)?!!d.expiry_date&&d.expiry_date>=today:(!d.expiry_date||d.expiry_date>=today));
  const approved=requiredForDriver.filter(t=>(docs||[]).some(d=>d.document_type===t&&isCurrentApproved(d))).length;
  const missing=requiredForDriver.filter(t=>!(docs||[]).some(d=>d.document_type===t&&isCurrentApproved(d)));
  $('#stats').innerHTML=stat(tr('Hali ya akaunti','Account status'),esc(labels[status]||status),'account')+stat(tr('Oda zinazoendelea','Active deliveries'),active.length,'orders')+stat(tr('Oda zilizokamilika','Completed deliveries'),completed,'done')+stat(tr('Nyaraka zilizoidhinishwa','Approved documents'),approved+'/'+required.length,'docs');
