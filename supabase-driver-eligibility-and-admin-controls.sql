@@ -5,9 +5,17 @@
 create or replace function public.zune_delivery_driver_has_required_documents(p_driver_id uuid)
 returns boolean language sql stable security definer set search_path = ''
 as $$
- select not exists (
+ select exists (
+  select 1 from public.delivery_driver_profiles p
+  where p.user_id=p_driver_id and not exists (
    select 1 from (values ('national_id'),('driver_photo'),('driving_license'),('vehicle_registration'),('vehicle_insurance')) required(doc_type)
-   where not exists (select 1 from public.delivery_driver_documents doc where doc.user_id=p_driver_id and doc.document_type=required.doc_type and doc.status='approved' and (doc.expiry_date is null or doc.expiry_date >= current_date))
+   where (required.doc_type <> 'driving_license' or p.vehicle_type <> 'bicycle')
+    and not exists (
+     select 1 from public.delivery_driver_documents doc
+     where doc.user_id=p.user_id and doc.document_type=required.doc_type and doc.status='approved'
+      and (doc.expiry_date is null or doc.expiry_date >= current_date)
+    )
+  )
  );
 $$;
 revoke all on function public.zune_delivery_driver_has_required_documents(uuid) from public,anon,authenticated;
