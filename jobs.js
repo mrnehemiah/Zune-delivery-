@@ -3,38 +3,50 @@ const db=createClient('https://rpkogiieegqgxqbzwxwo.supabase.co','sb_publishable
 const root=document.querySelector('#driverJobs'),notice=document.querySelector('#jobsNotice');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const labels={assigned:'Dereva amechaguliwa',ready_for_pickup:'Subiri uthibitisho wa muuzaji',picked_up:'Umepokea mzigo',in_transit:'Uko njiani',delivered:'Umefikisha · subiri mnunuzi',completed:'Imekamilika'};
-let rows=[],gpsTimer=null,trackingDeliveryId=null,driverMaps=[];
-function msg(s,err=false){notice.textContent=s;notice.classList.remove('hidden');notice.classList.toggle('error',err)}
-async function act(fn,args,success){const {error}=await db.rpc(fn,args);if(error){msg(error.message,true);return;}if(fn==='zune_delivery_driver_delivered'&&trackingDeliveryId===args.p_delivery_id)stopGps();if(fn==='zune_delivery_driver_in_transit')startGps(args.p_delivery_id);msg(success);await load();}
+let rows=[],gpsTimer=null,trackingDeliveryId=null,driverMaps=[],activeFilter='all',loading=false;
+const money=v=>'TSh '+Number(v||0).toLocaleString('en-US');
+function msg(s,err=false){notice.textContent=s;notice.classList.remove('hidden','error');if(err)notice.classList.add('error')}
+function group(d){if(d.delivery_status==='completed')return'done';if(['picked_up','in_transit','delivered'].includes(d.delivery_status))return'active';return'waiting'}
+function counts(){const c={all:rows.length,waiting:0,active:0,done:0};rows.forEach(d=>c[group(d)]++);[['All','all'],['Waiting','waiting'],['Active','active'],['Done','done']].forEach(([id,k])=>{const a=document.querySelector('#count'+id),b=document.querySelector('#filter'+id);if(a)a.textContent=c[k];if(b)b.textContent=c[k]});}
+function stageIndex(s){return({assigned:0,ready_for_pickup:0,picked_up:1,in_transit:2,delivered:3,completed:4})[s]??0}
+function stageMarkup(s){const n=stageIndex(s);return '<div class="jobs-stage" aria-label="Hatua ya delivery">'+[0,1,2,3].map(i=>'<span class="'+(i<n?'passed':'')+'"></span>').join('')+'</div>'}
+function card(d){
+ const id=esc(d.delivery_id),state=d.delivery_status||'',g=group(d);
+ let action='';
+ if(state==='ready_for_pickup')action='<button class="primary" data-pick="'+id+'">Nimethibitisha kupokea mzigo</button>';
+ if(state==='picked_up')action='<button class="primary" data-transit="'+id+'">Anza safari</button>';
+ if(state==='in_transit')action='<button class="primary" data-delivered="'+id+'">Nimemfikishia mnunuzi</button><button class="ghost" data-gps-toggle="'+id+'">'+(trackingDeliveryId===d.delivery_id?'Zima GPS':'Washa live GPS')+'</button>';
+ const hasCoords=d.latitude!=null&&d.longitude!=null;
+ const map=hasCoords?'<div class="jobs-map-wrap"><div class="driver-destination-map" id="driver-map-'+id+'" aria-label="Ramani ya eneo la mteja"></div><p class="driver-map-caption">Eneo la kufikisha mzigo · '+esc([d.delivery_address,d.district,d.region].filter(Boolean).join(', '))+'</p><a class="driver-route-link" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(d.latitude+','+d.longitude)+'">Fungua maelekezo ya safari ↗</a></div>':'<div class="jobs-map-wrap"><p class="driver-map-caption">Anwani ya ramani haijawekwa kwa GPS. Unaweza kutafuta eneo kwa kutumia anwani.</p><a class="driver-route-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([d.delivery_address,d.district,d.region].filter(Boolean).join(', '))+'">Tafuta anwani kwenye ramani ↗</a></div>';
+ const stateClass=g==='done'?'done':g==='active'?'active':'';
+ return '<article class="application-card jobs-card"><header class="jobs-card-head"><strong class="jobs-order-ref">ODA #'+esc(String(d.delivery_id).slice(0,8).toUpperCase())+'</strong><span class="jobs-state '+stateClass+'">'+esc(labels[state]||state||'Hali haijulikani')+'</span></header><div class="jobs-card-body"><div class="jobs-recipient"><span class="jobs-avatar">'+esc((d.recipient_name||'M').trim().charAt(0).toUpperCase())+'</span><div><small>ANAYEPOKEA MZIGO</small><strong>'+esc(d.recipient_name||'Taarifa za mpokeaji hazipo')+'</strong></div></div><div class="jobs-detail-line"><span class="jobs-detail-icon">☎</span><div><small>Mawasiliano</small><b>'+esc(d.recipient_phone||'Hayajapatikana')+'</b></div></div><div class="jobs-detail-line"><span class="jobs-detail-icon">⌖</span><div><small>Anwani ya kufikisha</small><b>'+esc([d.delivery_address,d.district,d.region].filter(Boolean).join(', ')||'Anwani haijawekwa')+'</b></div></div><div class="jobs-fee-row"><span>Malipo ya delivery</span><strong>'+money(d.delivery_fee)+'</strong></div>'+stageMarkup(state)+'</div><div class="jobs-card-actions">'+(action||'<span class="jobs-subtitle">'+(g==='done'?'Oda hii imekamilika.':'Subiri hatua inayofuata ya oda hii.')+'</span>')+'</div>'+map+'</article>';
+}
 function render(){
  driverMaps.forEach(m=>{try{m.remove()}catch(_){}});driverMaps=[];
- if(!rows.length){root.innerHTML='<h2>Hakuna oda ulizopangiwa</h2><p class="muted">Oda zitaonekana hapa baada ya muuzaji kukuchagua.</p>';return;}
- root.innerHTML=rows.map(d=>{
- let action='';
- if(d.delivery_status==='ready_for_pickup')action='<button class="primary" data-pick="'+d.delivery_id+'">Nimethibitisha kupokea mzigo</button>';
- if(d.delivery_status==='picked_up')action='<button class="primary" data-transit="'+d.delivery_id+'">Anza safari</button>';
- if(d.delivery_status==='in_transit')action='<button class="primary" data-delivered="'+d.delivery_id+'">Nimemfikishia mnunuzi</button><button class="ghost" data-gps-toggle="'+d.delivery_id+'">'+(trackingDeliveryId===d.delivery_id?'Zima ufuatiliaji wa GPS':'Washa ufuatiliaji wa GPS')+'</button>';
- const map=d.latitude!=null&&d.longitude!=null?'<div class="driver-destination-map" id="driver-map-'+esc(d.delivery_id)+'" aria-label="Ramani ya eneo la mteja"></div><p class="driver-map-caption">Mahali pa kufikisha mzigo · '+esc([d.delivery_address,d.district,d.region].filter(Boolean).join(', '))+'</p><a class="driver-route-link" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(d.latitude+','+d.longitude)+'">Anza maelekezo ya safari ↗</a>':'<p class="muted">GPS ya anwani haijawekwa. Fungua ramani kwa kutumia anwani ya mteja.</p><a class="driver-route-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([d.delivery_address,d.district,d.region].filter(Boolean).join(', '))+'">Tafuta anwani kwenye ramani ↗</a>';
- return '<article class="application-card"><div class="row-between"><strong>Oda #'+esc(d.delivery_id.slice(0,8).toUpperCase())+'</strong><span class="pill">'+esc(labels[d.delivery_status]||d.delivery_status)+'</span></div><p><b>Mpokeaji:</b> '+esc(d.recipient_name)+' · '+esc(d.recipient_phone)+'</p><p><b>Anwani:</b> '+esc([d.delivery_address,d.region,d.district].filter(Boolean).join(', '))+'</p><p><b>Delivery:</b> TSh '+Number(d.delivery_fee||0).toLocaleString('en-US')+'</p><div class="application-actions">'+action+' '+map+'</div></article>';
- }).join('');
- if(window.L){rows.forEach(d=>{if(d.latitude==null||d.longitude==null)return;const node=document.getElementById('driver-map-'+d.delivery_id);if(!node)return;const m=L.map(node,{scrollWheelZoom:false}).setView([Number(d.latitude),Number(d.longitude)],15);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(m);L.marker([Number(d.latitude),Number(d.longitude)]).addTo(m).bindPopup('Eneo la mteja / sehemu ya kufikisha mzigo').openPopup();driverMaps.push(m);});}
+ counts();
+ const visible=rows.filter(d=>activeFilter==='all'||group(d)===activeFilter);
+ if(!visible.length){root.innerHTML='<div class="jobs-empty"><span class="jobs-empty-icon">▣</span><h3>'+(rows.length?'Hakuna oda kwenye kichujio hiki':'Bado hujapangiwa oda')+'</h3><p>'+(rows.length?'Badili kichujio ili kuona oda nyingine.':'Oda zitaonekana hapa baada ya muuzaji kukuchagua kupitia mfumo.')+'</p></div>';return;}
+ root.innerHTML=visible.map(card).join('');
+ if(window.L){visible.forEach(d=>{if(d.latitude==null||d.longitude==null)return;const node=document.getElementById('driver-map-'+d.delivery_id);if(!node)return;const m=L.map(node,{scrollWheelZoom:false}).setView([Number(d.latitude),Number(d.longitude)],15);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(m);L.marker([Number(d.latitude),Number(d.longitude)]).addTo(m).bindPopup('Eneo la mteja / sehemu ya kufikisha mzigo');driverMaps.push(m);});}
  root.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_pickup',{p_delivery_id:b.dataset.pick,p_note:'Dereva amethibitisha kupokea mzigo.'},'Umethibitisha kupokea mzigo.'));
  root.querySelectorAll('[data-transit]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_in_transit',{p_delivery_id:b.dataset.transit},'Safari imeanza.'));
  root.querySelectorAll('[data-delivered]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_delivered',{p_delivery_id:b.dataset.delivered,p_note:'Dereva amethibitisha kufikisha mzigo.'},'Umeweka mzigo kuwa umefikishwa. Mnunuzi sasa athibitishe kupokea.'));
  root.querySelectorAll('[data-gps-toggle]').forEach(b=>b.onclick=()=>{const id=b.dataset.gpsToggle;if(trackingDeliveryId===id){stopGps();msg('Ufuatiliaji wa GPS umesimamishwa.');render();return;}startGps(id);});
 }
+async function act(fn,args,success){const {error}=await db.rpc(fn,args);if(error){msg(error.message,true);return;}if(fn==='zune_delivery_driver_delivered'&&trackingDeliveryId===args.p_delivery_id)stopGps();if(fn==='zune_delivery_driver_in_transit')startGps(args.p_delivery_id);msg(success);await load();}
 function startGps(id){if(!navigator.geolocation){msg('Kifaa hiki hakina GPS inayopatikana.',true);return;}stopGps();trackingDeliveryId=id;msg('Live GPS imewashwa. Eneo lako litasasishwa kila sekunde 20 wakati safari inaendelea na ukurasa uko wazi.');render();sendGps(id);gpsTimer=window.setInterval(()=>{if(!document.hidden&&trackingDeliveryId===id)sendGps(id);},20000);}
 function stopGps(){if(gpsTimer)window.clearInterval(gpsTimer);gpsTimer=null;trackingDeliveryId=null;}
 function sendGps(id){if(!navigator.geolocation)return;navigator.geolocation.getCurrentPosition(async pos=>{const{error}=await db.rpc('zune_delivery_update_location',{p_delivery_id:id,p_latitude:pos.coords.latitude,p_longitude:pos.coords.longitude});if(error)msg(error.message,true);else msg('Eneo la dereva limesasishwa kwa mnunuzi.');},err=>msg('Imeshindikana kupata eneo: '+err.message,true),{enableHighAccuracy:true,timeout:15000,maximumAge:10000});}
 async function load(){
- const {data:{user},error:authError}=await db.auth.getUser();if(authError)throw authError;
- if(!user){root.innerHTML='<h2>Ingia kwanza</h2><p class="muted">Ingia kwenye akaunti yako ya dereva ili kuona oda ulizopangiwa.</p><a class="primary" href="./login.html">Fungua ukurasa wa kuingia</a>';return;}
- const {data,error}=await db.rpc('zune_delivery_driver_queue');if(error)throw error;rows=data||[];render();
+ if(loading)return;loading=true;
+ try{const {data:{user},error:authError}=await db.auth.getUser();if(authError)throw authError;if(!user){root.innerHTML='<div class="jobs-empty"><h3>Ingia kwanza</h3><p>Ingia kwenye akaunti yako ya dereva ili kuona oda ulizopangiwa.</p><a class="primary" href="./login.html">Fungua ukurasa wa kuingia</a></div>';return;}
+ const {data,error}=await db.rpc('zune_delivery_driver_queue');if(error)throw error;rows=data||[];render();document.querySelector('#lastUpdated').textContent='Imesasishwa '+new Date().toLocaleTimeString('sw-TZ',{hour:'2-digit',minute:'2-digit'});notice.classList.add('hidden');
+ }finally{loading=false;}
 }
-document.querySelector('#refreshJobs')?.addEventListener('click',async()=>{const b=document.querySelector('#refreshJobs');b.disabled=true;b.textContent='Inapakia...';try{await load()}catch(e){msg(e.message,true)}finally{b.disabled=false;b.textContent='Onyesha upya oda'}});
+document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{activeFilter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));render();}));
+document.querySelector('#refreshJobs')?.addEventListener('click',async()=>{const b=document.querySelector('#refreshJobs');b.disabled=true;b.innerHTML='<span>↻</span> Inapakia…';try{await load()}catch(e){msg(e.message,true)}finally{b.disabled=false;b.innerHTML='<span>↻</span> Onyesha upya';}});
 document.querySelector('#logoutJobs')?.addEventListener('click',async()=>{const {error}=await db.auth.signOut();if(error){msg(error.message,true);return}window.location.href='./login.html'});
-load().catch(e=>{root.innerHTML='<h2>Imeshindikana kupakia oda</h2><p class="muted">'+esc(e.message)+'</p><a class="primary" href="./login.html">Rudi kuingia</a>';});
+load().catch(e=>{root.innerHTML='<div class="jobs-empty"><h3>Imeshindikana kupakia oda</h3><p>'+esc(e.message)+'</p><button class="jobs-refresh" onclick="location.reload()">Jaribu tena</button></div>';});
 setInterval(()=>{if(!document.hidden)load().catch(e=>msg(e.message,true));},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)load().catch(e=>msg(e.message,true));});
-
 window.addEventListener('pagehide',stopGps);
