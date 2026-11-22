@@ -1,47 +1,30 @@
-/* ZUNE Delivery landing page — refined responsive 3D design */
-.topbar{min-height:82px;height:auto;padding:14px max(20px,calc((100vw - 1120px)/2));gap:14px;position:sticky;top:0;z-index:40;backdrop-filter:blur(16px)}
-.brand{display:flex;align-items:center;gap:9px;font-size:20px;white-space:nowrap;letter-spacing:.1em}
-.brand span{font-size:10px;letter-spacing:.24em}
-.top-actions{align-items:center;gap:12px}
-.top-actions .ghost{min-width:76px;min-height:46px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px}
-.shell{max-width:1160px;padding-top:38px;padding-bottom:54px}
-.hero{min-height:410px;padding:clamp(30px,5vw,62px);border-radius:30px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(220px,.85fr);gap:28px;align-items:center}
-.hero>div:first-child{max-width:640px;position:relative;z-index:2}
-.hero .eyebrow{font-size:11px;letter-spacing:.25em;margin:0 0 18px;color:#9ce8c7}
-.hero h1{font-size:clamp(38px,5.2vw,64px);line-height:1.04;letter-spacing:-.045em;margin:0 0 22px;max-width:670px}
-.hero em{color:#aaf2d1}
-.hero .muted{font-size:clamp(16px,1.8vw,19px);line-height:1.65;max-width:510px;margin:0 0 28px;color:#e1f5e9}
-.hero-mark{width:min(100%,290px);aspect-ratio:1;border-radius:42% 58% 56% 44%;display:grid;place-items:center;justify-self:center;font-size:clamp(110px,17vw,190px);color:#c6f8df70;background:linear-gradient(145deg,#ffffff20,#ffffff08);border:1px solid #ffffff35;box-shadow:inset 0 2px 2px #ffffff40,0 28px 45px #002e2040,0 0 0 18px #ffffff08;transform:rotate(-7deg);position:relative}
-.hero-mark:after{content:"";position:absolute;inset:16px;border:1px dashed #ffffff45;border-radius:inherit}
-.application-actions{gap:13px;align-items:stretch}
-.application-actions a{min-height:58px;padding:15px 22px;display:inline-flex;align-items:center;justify-content:center;border-radius:15px;font-size:15px;line-height:1.3;text-decoration:none;box-shadow:0 5px 0 #034b38,0 12px 22px #002e2035,inset 0 1px #ffffff55}
-.application-actions a.ghost{background:linear-gradient(180deg,#fff,#eaf5ee);color:#205641;border:1px solid #d4e8da;box-shadow:0 5px 0 #cfdfd4,0 10px 20px #002e2018}
-.grid-cards{gap:18px;margin-top:28px}
-.grid-cards .panel{margin-top:0;padding:27px;min-height:245px;display:flex;flex-direction:column;align-items:flex-start}
-.grid-cards .panel h2{font-size:22px;letter-spacing:-.025em;margin:20px 0 9px}
-.grid-cards .panel p{font-size:14px;line-height:1.65;margin:0 0 18px}
-.grid-cards .text-link{margin-top:auto;padding-top:8px}
-.grid-cards .track-form{width:100%;margin-top:auto}
-.grid-cards .track-form input{min-height:46px}
-.grid-cards .track-form .primary{font-size:14px;min-height:46px}
-footer{margin-top:18px;border-top:1px solid #dce9e0}
-@media(max-width:760px){
- .topbar{min-height:74px;padding:11px 16px}
- .brand{font-size:17px;gap:6px}.brand span{font-size:9px}
- .top-actions{gap:8px}.top-actions .ghost{min-width:58px;min-height:43px;padding:9px 13px}
- .shell{padding:22px 14px 38px}
- .hero{min-height:0;grid-template-columns:1fr;padding:30px 24px 28px;gap:22px;border-radius:26px}
- .hero>div:first-child{max-width:none}
- .hero .eyebrow{font-size:10px;letter-spacing:.2em;margin-bottom:16px}
- .hero h1{font-size:clamp(36px,9vw,48px);line-height:1.08;letter-spacing:-.04em;margin-bottom:17px;max-width:560px}
- .hero .muted{font-size:16px;line-height:1.58;margin-bottom:23px}
- .hero-mark{width:118px;font-size:76px;justify-self:end;margin:-5px 6px 0 0;grid-row:2;opacity:.85}
- .hero-mark:after{inset:9px}
- .application-actions{display:grid;grid-template-columns:1fr;gap:11px}
- .application-actions a{width:100%;min-height:54px;padding:14px 17px;font-size:15px}
- .grid-cards{grid-template-columns:1fr;gap:14px;margin-top:22px}
- .grid-cards .panel{min-height:0;padding:23px}
- .grid-cards .panel h2{margin-top:16px}
- footer{font-size:10px;line-height:1.6}
-}
-@media(max-width:380px){.brand{font-size:15px}.brand span{font-size:8px}.top-actions .ghost{min-width:50px;padding:8px 10px}.hero{padding:26px 20px}.hero h1{font-size:35px}}
+/* ZUNE Delivery Driver Portal — premium navy / electric blue 3D */
+.driver-portal{--dp-navy:#101d39;--dp-blue:#2563eb;--dp-cyan:#67e8f9;--dp-ink:#14213b;background:radial-gradient(ellipse at 82% 8%,#dcecff 0,transparent 34%),linear-gradient(180deg,#f5f8ff 0%,#edf3fb 100%);color:var(--dp-ink)}
+.driver-portal .topbar{min-height:78px;padding:12px max(18px,calc((100vw - 1160px)/2));background:#101d39f2;color:#fff;border-bottom:1px solid #ffffff1c;box-shadow:0 10px 30px #07152d24}
+.driver-portal .brand{color:#fff;letter-spacing:.12em}.driver-portal .brand span{color:#8be9ff}
+.driver-portal .top-actions{display:flex;align-items:center;gap:12px}.driver-portal .top-actions .ghost{color:#fff;border:1px solid #ffffff35;border-radius:12px;padding:10px 15px;text-decoration:none}
+.portal-label{font-size:10px;letter-spacing:.2em;color:#9eb8dd;font-weight:800}
+.driver-portal .shell{max-width:1160px;padding:34px 20px 55px}
+.driver-portal .driver-hero{position:relative;overflow:hidden;min-height:420px;padding:clamp(28px,5vw,60px);border-radius:30px;background:radial-gradient(circle at 80% 30%,#254e8c 0,#172c52 34%,#101d39 72%);color:#fff;display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center;box-shadow:0 10px 0 #0b1730,0 28px 55px #142c5038,inset 0 2px 2px #ffffff20}
+.driver-portal .driver-hero:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(125deg,#ffffff0c,transparent 42%,#60a5fa12)}
+.driver-portal .hero-copy{position:relative;z-index:2;max-width:610px}.driver-portal .hero .eyebrow,.driver-portal .section-heading .eyebrow,.driver-portal .join-panel .eyebrow{font-size:10px;letter-spacing:.24em;font-weight:900;color:#78ddf4;margin:0 0 17px}
+.driver-portal .hero h1{font-size:clamp(40px,5.4vw,66px);line-height:1.02;letter-spacing:-.055em;margin:0 0 20px;color:#fff}
+.driver-portal .hero h1 em{color:#82e8f8;font-style:normal;text-shadow:0 4px 22px #22d3ee35}
+.driver-portal .hero .muted{max-width:520px;color:#d3e1f5;font-size:17px;line-height:1.7;margin:0 0 27px}
+.driver-portal .application-actions{display:flex;flex-wrap:wrap;gap:12px}
+.driver-portal .application-actions a,.driver-portal .join-panel>.primary{min-height:54px;padding:14px 20px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:850;box-shadow:0 5px 0 #123b86,0 13px 24px #02081755,inset 0 1px #ffffff70}
+.driver-portal .application-actions a.primary,.driver-portal .join-panel>.primary{background:linear-gradient(180deg,#65e8f7,#2498e8);color:#092144}
+.driver-portal .application-actions a.ghost{background:#ffffff12;color:#fff;border:1px solid #ffffff40;box-shadow:0 5px 0 #0a1830,0 12px 22px #02081738}
+.driver-portal .hero-note{display:flex;align-items:center;gap:9px;color:#9fb9d9;font-size:12px;margin:22px 0 0}.status-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 5px #4ade8020}
+.driver-portal .hero-workspace{position:relative;z-index:1;min-height:320px;padding:20px;border-radius:25px;background:linear-gradient(145deg,#ffffff20,#ffffff08);border:1px solid #ffffff30;box-shadow:inset 0 2px 2px #ffffff38,0 24px 45px #030c2055;backdrop-filter:blur(12px);transform:perspective(900px) rotateY(-7deg) rotateX(3deg)}
+.workspace-top,.workspace-bottom{display:flex;justify-content:space-between;align-items:center;color:#c8d9f2;font-size:10px;font-weight:900;letter-spacing:.14em}.workspace-live{color:#86efac}
+.workspace-orbit{height:235px;position:relative;display:grid;place-items:center}.orbit-ring{width:190px;height:190px;border-radius:50%;border:1px solid #7dd3fc65;box-shadow:0 0 0 18px #7dd3fc0b,0 0 45px #38bdf830,inset 0 0 35px #38bdf81a;transform:rotateX(62deg) rotateZ(-25deg)}.orbit-core{position:absolute;width:104px;height:104px;border-radius:30px;display:grid;place-items:center;font-size:55px;color:#b8f5ff;background:linear-gradient(145deg,#3b82f6,#142c58);box-shadow:0 12px 0 #0c1c3d,0 25px 35px #02081788,inset 0 2px 3px #ffffff70;transform:rotate(-9deg)}.orbit-chip{position:absolute;padding:8px 11px;border-radius:10px;background:#13294c;border:1px solid #8bdcfb55;color:#bff6ff;font-size:9px;font-weight:900;letter-spacing:.12em;box-shadow:0 7px 15px #02081766}.chip-one{top:28px;right:12%}.chip-two{bottom:27px;left:3%}.chip-three{bottom:20px;right:2%}.workspace-bottom{border-top:1px solid #ffffff25;padding-top:14px;letter-spacing:.04em}.workspace-bottom b{color:#75e7f7;margin-right:6px}
+.driver-portal .section-heading{text-align:center;margin:55px auto 25px;max-width:700px}.driver-portal .section-heading h2,.driver-portal .join-panel h2{font-size:clamp(27px,3vw,38px);letter-spacing:-.04em;margin:0 0 10px;color:#14213b}.driver-portal .section-heading .muted{color:#65758f;line-height:1.6;margin:0}
+.driver-portal .driver-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:0}
+.driver-portal .driver-features .feature-card{position:relative;overflow:hidden;min-height:255px;padding:25px;border-radius:21px;background:linear-gradient(145deg,#fff,#edf4ff);border:1px solid #dce8f7;box-shadow:0 7px 0 #d7e3f2,0 16px 28px #18365b13,inset 0 1px #fff;display:flex;flex-direction:column;align-items:flex-start}
+.driver-portal .feature-icon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,#d8f8ff,#a9d9ff);color:#1451a3;font-size:25px;font-weight:900;box-shadow:0 5px 0 #8bb9e8,0 10px 18px #23518a20;margin-bottom:18px}
+.driver-portal .feature-card .pill{font-size:9px;letter-spacing:.14em;color:#3672b6;font-weight:900}.driver-portal .feature-card h2{font-size:19px;margin:10px 0 8px;color:#172b4d}.driver-portal .feature-card p{font-size:13px;line-height:1.65;color:#64748b;margin:0 0 17px}.driver-portal .feature-card .text-link{margin-top:auto;color:#1765b7;font-size:12px;font-weight:900;text-decoration:none}
+.driver-portal .join-panel{margin-top:28px;padding:30px 34px;border-radius:23px;background:linear-gradient(110deg,#14294c,#1c4779);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:25px;box-shadow:0 8px 0 #0e2342,0 20px 35px #102d522c,inset 0 1px #ffffff25}.driver-portal .join-panel h2{color:#fff}.driver-portal .join-panel .muted{color:#c5d7ef;max-width:620px;line-height:1.6;margin:0}.driver-portal .join-panel>.primary{white-space:nowrap}
+.driver-portal footer{margin-top:28px;padding-top:20px;border-top:1px solid #d7e3f1;color:#74839a;font-size:11px;display:flex;justify-content:space-between;gap:12px}
+@media(max-width:800px){.driver-portal .driver-hero{grid-template-columns:1fr;gap:25px}.driver-portal .hero-workspace{min-height:290px;transform:none}.driver-portal .driver-features{grid-template-columns:repeat(2,minmax(0,1fr))}.driver-portal .join-panel{align-items:flex-start;flex-direction:column}}
+@media(max-width:560px){.driver-portal .topbar{padding:10px 14px;min-height:68px}.driver-portal .brand{font-size:16px}.driver-portal .brand span{font-size:9px}.portal-label{display:none}.driver-portal .shell{padding:20px 13px 38px}.driver-portal .driver-hero{padding:28px 21px;border-radius:23px;min-height:0}.driver-portal .hero h1{font-size:43px}.driver-portal .hero .muted{font-size:15px}.driver-portal .application-actions{display:grid;grid-template-columns:1fr}.driver-portal .application-actions a{width:100%}.driver-portal .hero-workspace{padding:16px;min-height:270px}.workspace-orbit{height:205px}.orbit-ring{width:165px;height:165px}.orbit-core{width:88px;height:88px;font-size:46px}.driver-portal .section-heading{margin:42px auto 21px}.driver-portal .driver-features{grid-template-columns:1fr;gap:14px}.driver-portal .driver-features .feature-card{min-height:0;padding:22px}.driver-portal .join-panel{padding:25px 22px}.driver-portal .join-panel>.primary{width:100%}.driver-portal footer{flex-direction:column;font-size:10px}}
