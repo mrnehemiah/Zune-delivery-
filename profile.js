@@ -6,8 +6,9 @@ if(d.profile_photo_path){const{data:signed}=await db.storage.from('zune-driver-d
  else if(vehicleRequest){status.textContent=(vehicleRequest.status==='approved'?'Ombi lako la mwisho liliidhinishwa. ':'Ombi lako la mwisho halikuidhinishwa. ')+(vehicleRequest.review_note||'Unaweza kuwasilisha ombi jipya.');button.disabled=false;button.textContent='Omba kubadilisha taarifa za chombo';}
  else {status.textContent='Mabadiliko yataanza kutumika baada ya Admin kuyakagua na kuyaidhinisha.';button.disabled=false;}
 }
-$('#vehicleEdit').onclick=()=>{const form=$('#vehicleChangeForm');form.hidden=!form.hidden;if(!form.hidden){$('#requestVehicleType').value=driver.vehicle_type||'motorcycle';$('#requestVehicleRegistration').value=driver.vehicle_registration||'';$('#requestLicenseNumber').value=driver.license_number||'';$('#requestVehicleOwnership').value=driver.vehicle_ownership||'owned';$('#requestVehicleReason').focus();}};
-$('#requestVehicleType').addEventListener('change',e=>{const bike=e.target.value==='bicycle';$('#requestVehicleRegistration').required=!bike;$('#requestLicenseNumber').required=!bike;});
+function syncVehicleRequirements(){const bike=$('#requestVehicleType').value==='bicycle';$('#requestVehicleRegistration').required=!bike;$('#requestLicenseNumber').required=!bike;}
+$('#vehicleEdit').onclick=()=>{const form=$('#vehicleChangeForm');form.hidden=!form.hidden;if(!form.hidden){$('#requestVehicleType').value=driver.vehicle_type||'motorcycle';$('#requestVehicleRegistration').value=driver.vehicle_registration||'';$('#requestLicenseNumber').value=driver.license_number||'';$('#requestVehicleOwnership').value=driver.vehicle_ownership||'owned';syncVehicleRequirements();$('#requestVehicleReason').focus();}};
+$('#requestVehicleType').addEventListener('change',syncVehicleRequirements);
 $('#cancelVehicleChange').onclick=()=>{$('#vehicleChangeForm').reset();$('#vehicleChangeForm').hidden=true;};
 $('#vehicleChangeForm').addEventListener('submit',async e=>{
  e.preventDefault();const button=$('#submitVehicleChange'),type=$('#requestVehicleType').value,registration=$('#requestVehicleRegistration').value.trim(),license=$('#requestLicenseNumber').value.trim();
