@@ -22,9 +22,10 @@ async function init(){
  $('#greeting').textContent=tr('Karibu, ','Welcome, ')+name.split(' ')[0]+'.';
  $('#statusText').innerHTML='<span class="status '+(status==='active'?'':status==='pending'?'pending':'bad')+'">'+esc(labels[status]||status)+'</span>';
  const active=(jobs||[]).filter(j=>!['completed','cancelled'].includes(j.delivery_status));
+ const completed=(jobs||[]).filter(j=>['completed','delivered'].includes(j.delivery_status)).length;
  const approved=(docs||[]).filter(d=>d.status==='approved').length;
  const missing=required.filter(t=>!(docs||[]).some(d=>d.document_type===t&&d.status==='approved'));
- $('#stats').innerHTML=stat(tr('Hali ya akaunti','Account status'),esc(labels[status]||status))+stat(tr('Oda zinazoendelea','Active deliveries'),active.length)+stat(tr('Nyaraka zilizoidhinishwa','Approved documents'),approved+'/'+required.length);
+ $('#stats').innerHTML=stat(tr('Hali ya akaunti','Account status'),esc(labels[status]||status))+stat(tr('Oda zinazoendelea','Active deliveries'),active.length)+stat(tr('Oda zilizokamilika','Completed deliveries'),completed)+stat(tr('Nyaraka zilizoidhinishwa','Approved documents'),approved+'/'+required.length);
  if(status!=='active')notice(status==='rejected'?tr('Maombi yamekataliwa: ','Application rejected: ')+(app?.review_note||driver.rejection_reason||''):tr('Maombi yako yanasubiri idhini ya Admin. Huwezi kupokea oda bado.','Your application is awaiting Admin approval. You cannot receive deliveries yet.'),status==='rejected');
  else if(missing.length)notice(tr('Kabla ya kupangiwa oda, idhinisha nyaraka hizi: ','Before receiving deliveries, get these documents approved: ')+missing.join(', '));
  else notice(tr('Akaunti na nyaraka zako ziko tayari. Oda mpya zitaonekana hapa zikikupangiwa.','Your account and documents are approved. New assignments will appear here.'));
