@@ -44,3 +44,5 @@
 .jobs-detail-line{align-items:center}
 .jobs-stat-icon:after,.jobs-detail-icon:after,.jobs-avatar:after{content:"";position:absolute;inset:1px;border-radius:inherit;border-top:1px solid #ffffff65;pointer-events:none}
 @media(max-width:650px){.jobs-detail-icon{width:29px;height:29px;flex-basis:29px}.jobs-avatar{width:39px;height:39px;flex-basis:39px}}
+
+.jobs-eta-panel,.jobs-eta-readonly{display:grid;gap:8px;margin:12px 0;padding:13px;border:1px solid #cfe5d8;border-radius:14px;background:linear-gradient(135deg,#f1faf4,#fff)}.jobs-eta-panel small,.jobs-eta-readonly small{display:block;color:#718178;font-size:9px;font-weight:900;letter-spacing:.08em}.jobs-eta-panel strong,.jobs-eta-readonly strong{display:block;color:#14523d;font-size:13px;margin-top:4px}.jobs-eta-panel label{font-size:10px;font-weight:800;color:#62766b}.jobs-eta-panel input{width:100%;min-width:0;border:1px solid #d8e5dc;border-radius:10px;padding:11px;background:#fff;color:#183e30;font:12px inherit}.jobs-eta-panel button{min-height:40px}
