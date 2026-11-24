@@ -23,7 +23,15 @@ function stageMarkup(s){const n=stageIndex(s);return '<div class="jobs-stage" ar
 function card(d){
  const id=esc(d.delivery_id),state=d.delivery_status||'',g=group(d);
  let action='';
- if(state==='ready_for_pickup')action='<button class="primary" data-pick="'+id+'">Nimethibitisha kupokea mzigo</button>';
+ if(state==='assigned'){
+ const deadline=d.driver_response_deadline?new Date(d.driver_response_deadline):null;
+ if(d.driver_response_status==='pending'&&deadline&&deadline.getTime()>Date.now()){
+  action='<div class="jobs-response"><p><b>Ombi jipya la delivery.</b> Kubali au kataa ndani ya dakika 10. Muda wa mwisho: '+esc(deadline.toLocaleTimeString('sw-TZ',{hour:'2-digit',minute:'2-digit'}))+'</p><button class="primary" data-accept="'+id+'">Kubali oda</button><button class="ghost" data-reject="'+id+'">Kataa oda</button></div>';
+ }else if(d.driver_response_status==='accepted')action='<p class="jobs-subtitle">Umekubali oda hii. Subiri muuzaji athibitishe makabidhiano ya mzigo.</p>';
+ else if(d.driver_response_status==='rejected')action='<p class="jobs-subtitle">Ulikataa oda hii. Muuzaji atakuchagulia dereva mwingine.</p>';
+ else action='<p class="jobs-subtitle">Muda wa kujibu umeisha. Muuzaji anaweza kupanga dereva mwingine.</p>';
+}
+if(state==='ready_for_pickup')action='<button class="primary" data-pick="'+id+'">Nimethibitisha kupokea mzigo</button>';
  if(state==='picked_up')action='<button class="primary" data-transit="'+id+'">Anza safari</button>';
  if(state==='in_transit')action='<button class="primary" data-delivered="'+id+'">Nimemfikishia mnunuzi</button><button class="ghost" data-gps-toggle="'+id+'">'+(trackingDeliveryId===d.delivery_id?'Zima GPS':'Washa live GPS')+'</button>';
  const hasCoords=d.latitude!=null&&d.longitude!=null;
@@ -38,6 +46,8 @@ function render(){
  if(!visible.length){root.innerHTML='<div class="jobs-empty"><span class="jobs-empty-icon">'+svgIcon('box')+'</span><h3>'+(rows.length?'Hakuna oda kwenye kichujio hiki':'Bado hujapangiwa oda')+'</h3><p>'+(rows.length?'Badili kichujio ili kuona oda nyingine.':'Oda zitaonekana hapa baada ya muuzaji kukuchagua kupitia mfumo.')+'</p></div>';return;}
  root.innerHTML=visible.map(card).join('');
  if(window.L){visible.forEach(d=>{if(d.latitude==null||d.longitude==null)return;const node=document.getElementById('driver-map-'+d.delivery_id);if(!node)return;const m=L.map(node,{scrollWheelZoom:false}).setView([Number(d.latitude),Number(d.longitude)],15);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(m);L.marker([Number(d.latitude),Number(d.longitude)]).addTo(m).bindPopup('Eneo la mteja / sehemu ya kufikisha mzigo');driverMaps.push(m);});}
+ root.querySelectorAll('[data-accept]').forEach(b=>b.onclick=async()=>{b.disabled=true;const {data,error}=await db.rpc('zune_delivery_driver_accept',{p_delivery_id:b.dataset.accept});if(error){msg(error.message,true);b.disabled=false;return;}if(!data?.ok){msg(data?.message||'Muda wa kujibu umeisha.',true);}else msg('Umekubali jukumu la delivery.');await load();});
+ root.querySelectorAll('[data-reject]').forEach(b=>b.onclick=async()=>{const reason=window.prompt('Eleza sababu ya kukataa oda hii (angalau herufi 3):');if(reason===null)return;if(reason.trim().length<3){msg('Sababu ni fupi sana.',true);return;}b.disabled=true;const {data,error}=await db.rpc('zune_delivery_driver_reject',{p_delivery_id:b.dataset.reject,p_reason:reason.trim()});if(error){msg(error.message,true);b.disabled=false;return;}if(!data?.ok){msg(data?.message||'Muda wa kujibu umeisha.',true);}else msg('Umeikataa oda. Muuzaji amepokea taarifa na anaweza kuchagua dereva mwingine.');await load();});
  root.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_pickup',{p_delivery_id:b.dataset.pick,p_note:'Dereva amethibitisha kupokea mzigo.'},'Umethibitisha kupokea mzigo.'));
  root.querySelectorAll('[data-transit]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_in_transit',{p_delivery_id:b.dataset.transit},'Safari imeanza.'));
  root.querySelectorAll('[data-delivered]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_delivered',{p_delivery_id:b.dataset.delivered,p_note:'Dereva amethibitisha kufikisha mzigo.'},'Umeweka mzigo kuwa umefikishwa. Mnunuzi sasa athibitishe kupokea.'));
