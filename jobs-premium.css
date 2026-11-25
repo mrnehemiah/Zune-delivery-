@@ -44,3 +44,15 @@
 .jobs-detail-line{align-items:center}
 .jobs-stat-icon:after,.jobs-detail-icon:after,.jobs-avatar:after{content:"";position:absolute;inset:1px;border-radius:inherit;border-top:1px solid #ffffff65;pointer-events:none}
 @media(max-width:650px){.jobs-detail-icon{width:29px;height:29px;flex-basis:29px}.jobs-avatar{width:39px;height:39px;flex-basis:39px}}
+
+
+/* Product and variant details for driver fulfillment */
+.jobs-items{margin:14px 0;padding:13px 14px;border:1px solid rgba(16,185,129,.18);border-radius:16px;background:linear-gradient(145deg,rgba(16,185,129,.075),rgba(255,255,255,.92));box-shadow:0 8px 22px rgba(15,23,42,.055)}
+.jobs-items-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;color:#087b5b;font-size:10px;font-weight:850;letter-spacing:.11em}
+.jobs-items-heading span{display:grid;place-items:center;min-width:23px;height:23px;padding:0 6px;border-radius:8px;background:#d9f7eb;color:#086449;font-size:11px}
+.jobs-item-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid rgba(15,23,42,.07)}
+.jobs-item-copy{display:grid;gap:3px;min-width:0}
+.jobs-item-copy b{color:#172b3b;font-size:13px;overflow-wrap:anywhere}
+.jobs-item-copy small,.jobs-items-empty small{color:#64748b;font-size:11px}
+.jobs-item-row>strong{flex:0 0 auto;color:#087b5b;font-size:13px;font-weight:850}
+.jobs-items-empty{background:#f8fafc;border-color:#e2e8f0}
