@@ -1,3 +1,6 @@
+-- IMPORTANT: This file is the original base schema/bootstrap. The current production payout policy
+-- is installed by supabase-driver-payout-dispute-hold-3pct.sql after this file:
+-- fixed 3% commission to Admin Wallet after payment confirmation, with open-dispute payout holds.
 -- ZUNE Driver Payments Dashboard
 -- Driver earnings are sourced only from the configured driver_payout_amount on
 -- buyer-confirmed completed deliveries. The buyer's delivery fee is NOT treated
