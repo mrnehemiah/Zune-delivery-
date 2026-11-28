@@ -59,22 +59,26 @@ function render(){
 }
 async function deliverWithProof(button){
  const id=button.dataset.delivered,card=button.closest('.jobs-card'),input=card?.querySelector('[data-proof-file]'),file=input?.files?.[0];
- if(!file){msg('Piga picha au chagua picha ya ushahidi kwanza.',true);input?.focus();return;}
- const allowed=['image/jpeg','image/png','image/webp'];
- if(!allowed.includes(file.type)){msg('Tumia picha ya JPG, PNG au WEBP pekee.',true);return;}
- if(file.size>8*1024*1024){msg('Picha imezidi MB 8. Chagua picha ndogo.',true);return;}
- button.disabled=true;const oldText=button.textContent;button.textContent='Inapakia ushahidi...';
- let uploadedPath=null,proofSaved=false;
+ let uploadedPath=button.dataset.proofPath||null,proofSaved=!!uploadedPath;
+ if(!proofSaved&&!file){msg('Piga picha au chagua picha ya ushahidi kwanza.',true);input?.focus();return;}
+ if(!proofSaved){
+  const allowed=['image/jpeg','image/png','image/webp'];
+  if(!allowed.includes(file.type)){msg('Tumia picha ya JPG, PNG au WEBP pekee.',true);return;}
+  if(file.size>8*1024*1024){msg('Picha imezidi MB 8. Chagua picha ndogo.',true);return;}
+ }
+ button.disabled=true;const oldText=button.textContent;button.textContent=proofSaved?'Inathibitisha kufikisha...':'Inapakia ushahidi...';
  try{
-  const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
-  const token=globalThis.crypto?.randomUUID?.()||String(Date.now());
-  uploadedPath=id+'/'+token+'.'+ext;
-  const {error:uploadError}=await db.storage.from('zune-delivery-proofs').upload(uploadedPath,file,{contentType:file.type,cacheControl:'3600',upsert:false});
-  if(uploadError)throw uploadError;
-  const {data:proofData,error:proofError}=await db.rpc('zune_delivery_driver_submit_proof',{p_delivery_id:id,p_object_path:uploadedPath});
-  if(proofError)throw proofError;
-  if(!proofData?.ok)throw new Error('Mfumo haukuthibitisha kuhifadhi ushahidi.');
-  proofSaved=true;
+  if(!proofSaved){
+   const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+   const token=globalThis.crypto?.randomUUID?.()||String(Date.now());
+   uploadedPath=id+'/'+token+'.'+ext;
+   const {error:uploadError}=await db.storage.from('zune-delivery-proofs').upload(uploadedPath,file,{contentType:file.type,cacheControl:'3600',upsert:false});
+   if(uploadError)throw uploadError;
+   const {data:proofData,error:proofError}=await db.rpc('zune_delivery_driver_submit_proof',{p_delivery_id:id,p_object_path:uploadedPath});
+   if(proofError)throw proofError;
+   if(!proofData?.ok)throw new Error('Mfumo haukuthibitisha kuhifadhi ushahidi.');
+   proofSaved=true;button.dataset.proofPath=uploadedPath;
+  }
   button.textContent='Inathibitisha kufikisha...';
   const {data,error}=await db.rpc('zune_delivery_driver_delivered',{p_delivery_id:id,p_note:'Dereva amepakia picha ya ushahidi na kuthibitisha kufikisha mzigo.'});
   if(error)throw error;
