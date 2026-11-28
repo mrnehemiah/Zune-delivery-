@@ -7,7 +7,7 @@ This repository contains the driver portal (vanilla HTML/CSS/JavaScript + Supaba
 2. Seller confirms handover of the parcel.
 3. Assigned driver confirms pickup, starts transit and uploads a private JPG/PNG/WEBP proof photo (maximum 8 MB) before marking delivered.
 4. Buyer views the proof photo through a short-lived signed URL and confirms receipt in ZUNE Marketplace.
-5. Only after buyer confirmation does the delivery enter `completed`. Admin then records the driver's gross payout and any explicit deduction in the Driver Payouts panel. No implicit driver commission is calculated and no mobile-money transfer is sent automatically; `paid` is recorded only after Admin confirms the transfer was made.
+5. Only after buyer confirmation does the delivery enter `completed`. Admin records the driver's gross payout in the Driver Payouts panel. ZUNE automatically deducts the approved fixed 3% delivery commission and credits it to Admin Wallet after payment confirmation; the driver receives the remaining 97%. An open order dispute automatically places unpaid driver payouts on hold until Admin resolves it. No mobile-money transfer is sent automatically; `paid` is recorded only after Admin confirms the transfer was made.
 
 ## Supabase
 Project: `rpkogiieegqgxqbzwxwo`
@@ -32,7 +32,7 @@ Driver accounts are created with Supabase Auth. After email confirmation (if ena
 
 ## GPS and operational limitations
 - Live GPS updates are sent every 20 seconds only while the delivery page is open, visible and the driver grants location permission. This portal does not claim background tracking. Proof photos are private: only the assigned driver, the buyer for that delivery and Admin can read them. The database refuses the driver's delivered transition until the uploaded proof object is saved and linked to that delivery.
-- The driver wallet is read-only for drivers. Admin records payouts; there is no driver withdrawal request or automated payout rail in this portal.
+- The driver wallet is read-only for drivers. It shows gross earnings, the automatic 3% Admin Wallet commission, net earnings, paid/pending amounts and any amount held by an open dispute. Admin records payouts; there is no driver withdrawal request or automated payout rail in this portal.
 
 ## Driver notifications
 - `notifications.html` is the live notification inbox. It reads the existing `public.notifications` table under its owner-scoped RLS policies.
