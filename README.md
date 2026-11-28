@@ -69,3 +69,10 @@ The latest database audit reports 1 driver profile, 1 application, 6 document re
 - Evidence is stored in the private `zune-delivery-proofs` bucket. The assigned driver, the buyer for that delivery and Admin are the only permitted viewers.
 - The buyer tracking page creates a short-lived signed URL to show the proof photo and keeps buyer receipt confirmation as a separate action.
 - Historical completed deliveries are not retroactively given proof photos; the new requirement applies to deliveries from this release onward.
+
+## Driver commission and dispute holds — Phase 4
+- Approved policy: automatic fixed 3% commission from gross driver payout; driver receives 97%.
+- The 3% commission is credited to Admin Wallet/financial ledger only after Admin confirms the payout as paid. Example: TSh 3,000 gross → TSh 90 commission → TSh 2,910 net.
+- Open, under-review, waiting-for-buyer, waiting-for-seller or escalated order disputes automatically set unpaid delivery payouts to `on_hold_dispute`. The Admin payout RPC refuses new or pending payouts until all related disputes are resolved or rejected.
+- The driver wallet shows the held amount separately. Admin sees a dispute-hold badge and cannot open the payout form while the delivery is held.
+- Follow-on SQL source: `supabase-driver-payout-dispute-hold-3pct.sql`.
