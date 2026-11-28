@@ -14,8 +14,8 @@ Standalone ZUNE delivery portal. This repository is kept separate from ZUNE Mark
 3. Driver uploads the five required documents: national ID, driver portrait, driving licence/permit, vehicle registration card, and valid vehicle insurance.
 4. Admin reviews each document. A driver must have an active profile and all required documents approved before assignments are available.
 5. Seller selects an active approved driver and confirms parcel handover.
-6. Driver confirms pickup, starts transit, shares GPS while the delivery page is open, and marks the parcel delivered.
-7. Buyer confirms receipt. Only then does the delivery become completed.
+6. Driver confirms pickup, starts transit, shares GPS while the delivery page is open, uploads a delivery-proof photo, and marks the parcel delivered.
+7. Buyer views the private proof photo and confirms receipt. Only then does the delivery become completed.
 
 ## Main pages
 - `index.html`: public landing page and buyer tracking entry
@@ -24,7 +24,8 @@ Standalone ZUNE delivery portal. This repository is kept separate from ZUNE Mark
 - `dashboard.html` / `dashboard.js`: refreshed driver dashboard
 - `driver-documents.html` / `driver-documents.js`: private document uploads and review status
 - `jobs.html` / `jobs.js`: assignments, pickup/transit/delivery actions and GPS sharing
-- `tracking.html` / `tracking.js`: buyer-only delivery status, map, timeline and receipt confirmation
+- `tracking.html` / `tracking.js`: buyer-only delivery status, map, timeline, private proof-of-delivery photo and receipt confirmation
+- `supabase-delivery-proof-of-delivery.sql`: private driver-uploaded delivery evidence and buyer/Admin-only viewing
 - `supabase-delivery-workflow.sql`: delivery lifecycle RPCs and event log
 - `supabase-buyer-tracking.sql`: buyer-authorized tracking RPC
 
@@ -38,7 +39,7 @@ The private `zune-driver-documents` bucket stores national ID, driver portrait, 
 - This repository owns the driver portal and customer delivery tracking view.
 
 ## Current validation status
-The driver dashboard, buyer tracking UI, buyer-scoped tracking RPC, and driver wallet are committed. The shared database currently contains 1 driver profile, 1 driver application, 6 driver-document records, 4 delivery rows, and 3 driver payment records. A live end-to-end test using real buyer, seller and driver sessions is still required before production readiness.
+The driver dashboard, buyer tracking UI, buyer-scoped tracking RPC, driver wallet, and private proof-of-delivery photo workflow are committed. The shared database currently contains 1 driver profile, 1 driver application, 6 driver-document records, 4 delivery rows, and 3 driver payment records. A live end-to-end test using real buyer, seller and driver sessions is still required before production readiness.
 
 
 ## Driver eligibility and Admin controls (latest)
@@ -49,7 +50,7 @@ The driver dashboard, buyer tracking UI, buyer-scoped tracking RPC, and driver w
 - The helper `zune_delivery_driver_has_required_documents(p_driver_id)` is internal and not executable by browser roles.
 
 ## Production test still required
-The latest database audit reports 1 driver profile, 1 application, 6 document records (all currently approved), 4 delivery rows (1 assigned and 3 completed), and 3 driver payment records (all currently marked paid). These records show that the database has progressed beyond the older zero-document/zero-delivery snapshot, but they do not replace a fresh cross-account E2E test. Verify assignment, seller handover, driver acceptance/pickup, GPS updates, delivery, buyer receipt confirmation, Admin payout recording, and driver-only wallet visibility using real accounts. Confirm the latest GitHub Pages deployment and Admin UI wiring for driver suspend/restore before calling the whole service production-ready.
+The latest database audit reports 1 driver profile, 1 application, 6 document records (all currently approved), 4 delivery rows (1 assigned and 3 completed), and 3 driver payment records (all currently marked paid). These records show that the database has progressed beyond the older zero-document/zero-delivery snapshot, but they do not replace a fresh cross-account E2E test. Verify assignment, seller handover, driver acceptance/pickup, GPS updates, proof-photo upload and buyer-only viewing, buyer receipt confirmation, Admin payout recording, and driver-only wallet visibility using real accounts. Confirm the latest GitHub Pages deployment and Admin UI wiring for driver suspend/restore before calling the whole service production-ready.
 
 
 ## Guided driver registration rebuild
