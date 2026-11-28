@@ -56,3 +56,11 @@
 .jobs-item-copy small,.jobs-items-empty small{color:#64748b;font-size:11px}
 .jobs-item-row>strong{flex:0 0 auto;color:#087b5b;font-size:13px;font-weight:850}
 .jobs-items-empty{background:#f8fafc;border-color:#e2e8f0}
+
+
+/* Private proof-of-delivery capture control */
+.jobs-proof-control{display:grid;gap:9px;width:100%;min-width:0}
+.jobs-proof-label{display:grid;gap:6px;padding:12px 14px;border:1px dashed rgba(30,110,90,.42);border-radius:14px;background:rgba(16,185,129,.055);font-weight:700;color:var(--text,#102a43)}
+.jobs-proof-label input{display:block;width:100%;max-width:100%;font:inherit;font-size:13px}
+.jobs-proof-label small{font-weight:500;color:var(--muted,#64748b)}
+.jobs-proof-control .primary{width:100%}
