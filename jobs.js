@@ -64,7 +64,7 @@ async function deliverWithProof(button){
  if(!allowed.includes(file.type)){msg('Tumia picha ya JPG, PNG au WEBP pekee.',true);return;}
  if(file.size>8*1024*1024){msg('Picha imezidi MB 8. Chagua picha ndogo.',true);return;}
  button.disabled=true;const oldText=button.textContent;button.textContent='Inapakia ushahidi...';
- let uploadedPath=null;
+ let uploadedPath=null,proofSaved=false;
  try{
   const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
   const token=globalThis.crypto?.randomUUID?.()||String(Date.now());
@@ -74,6 +74,7 @@ async function deliverWithProof(button){
   const {data:proofData,error:proofError}=await db.rpc('zune_delivery_driver_submit_proof',{p_delivery_id:id,p_object_path:uploadedPath});
   if(proofError)throw proofError;
   if(!proofData?.ok)throw new Error('Mfumo haukuthibitisha kuhifadhi ushahidi.');
+  proofSaved=true;
   button.textContent='Inathibitisha kufikisha...';
   const {data,error}=await db.rpc('zune_delivery_driver_delivered',{p_delivery_id:id,p_note:'Dereva amepakia picha ya ushahidi na kuthibitisha kufikisha mzigo.'});
   if(error)throw error;
@@ -83,7 +84,7 @@ async function deliverWithProof(button){
   await load();
  }catch(error){
   msg(error.message||'Imeshindikana kuhifadhi ushahidi wa delivery.',true);
-  if(uploadedPath){const {error:cleanupError}=await db.storage.from('zune-delivery-proofs').remove([uploadedPath]);if(cleanupError)console.warn('Proof cleanup:',cleanupError.message);}
+  if(uploadedPath&&!proofSaved){const {error:cleanupError}=await db.storage.from('zune-delivery-proofs').remove([uploadedPath]);if(cleanupError)console.warn('Proof cleanup:',cleanupError.message);}
  }finally{button.disabled=false;button.textContent=oldText;}
 }
 async function act(fn,args,success){const {error}=await db.rpc(fn,args);if(error){msg(error.message,true);return;}if(fn==='zune_delivery_driver_delivered'&&trackingDeliveryId===args.p_delivery_id)stopGps();if(fn==='zune_delivery_driver_in_transit')startGps(args.p_delivery_id);msg(success);await load();}
