@@ -38,7 +38,7 @@ The private `zune-driver-documents` bucket stores national ID, driver portrait, 
 - This repository owns the driver portal and customer delivery tracking view.
 
 ## Current validation status
-The dashboard and buyer tracking UI plus the buyer-scoped tracking RPC have been committed. The live end-to-end order lifecycle still requires a real test order: the current database contains 1 driver profile, 1 driver application, 0 driver documents and 0 delivery rows. Do not treat this as a completed production test until a real order has been assigned, handed over, tracked, delivered and buyer-confirmed.
+The driver dashboard, buyer tracking UI, buyer-scoped tracking RPC, and driver wallet are committed. The shared database currently contains 1 driver profile, 1 driver application, 6 driver-document records, 4 delivery rows, and 3 driver payment records. A live end-to-end test using real buyer, seller and driver sessions is still required before production readiness.
 
 
 ## Driver eligibility and Admin controls (latest)
@@ -49,7 +49,7 @@ The dashboard and buyer tracking UI plus the buyer-scoped tracking RPC have been
 - The helper `zune_delivery_driver_has_required_documents(p_driver_id)` is internal and not executable by browser roles.
 
 ## Production test still required
-The shared database currently reports one driver profile, one application, zero uploaded driver documents, and two delivery rows (see the database validation before release). Therefore no driver currently qualifies for assignment, and a real assignment-to-buyer-receipt test cannot yet be completed. Upload and approve the five documents, then create a test delivery and verify seller assignment, handover, driver pickup, GPS updates, delivered status, and buyer receipt confirmation. GitHub Pages deployment and the separate Admin UI wiring for suspend/restore must also be checked before calling the whole service production-ready.
+The latest database audit reports 1 driver profile, 1 application, 6 document records (all currently approved), 4 delivery rows (1 assigned and 3 completed), and 3 driver payment records (all currently marked paid). These records show that the database has progressed beyond the older zero-document/zero-delivery snapshot, but they do not replace a fresh cross-account E2E test. Verify assignment, seller handover, driver acceptance/pickup, GPS updates, delivery, buyer receipt confirmation, Admin payout recording, and driver-only wallet visibility using real accounts. Confirm the latest GitHub Pages deployment and Admin UI wiring for driver suspend/restore before calling the whole service production-ready.
 
 
 ## Guided driver registration rebuild
