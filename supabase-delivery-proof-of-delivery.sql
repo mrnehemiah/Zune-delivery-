@@ -26,6 +26,20 @@ with check (
   )
 );
 
+drop policy if exists "ZUNE drivers remove unlinked delivery proof uploads" on storage.objects;
+create policy "ZUNE drivers remove unlinked delivery proof uploads"
+on storage.objects for delete to authenticated
+using (
+  bucket_id = 'zune-delivery-proofs'
+  and exists (
+    select 1 from public.order_deliveries d
+    where d.id::text = (storage.foldername(name))[1]
+      and d.assigned_driver_id = (select auth.uid())
+      and d.status = 'in_transit'
+      and d.proof_of_delivery_path is distinct from name
+  )
+);
+
 drop policy if exists "ZUNE delivery participants view proof" on storage.objects;
 create policy "ZUNE delivery participants view proof"
 on storage.objects for select to authenticated
