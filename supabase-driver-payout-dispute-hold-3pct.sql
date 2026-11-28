@@ -17,7 +17,7 @@ begin
   when exists(
    select 1 from public.orders o join public.transaction_disputes td on td.order_id=o.id
    where o.checkout_id=d.checkout_id and o.vendor_id=d.vendor_id
-    and td.status in ('open','under_review','escalated')
+    and td.status in ('open','under_review','waiting_for_buyer','waiting_for_seller','escalated')
   ) then 'on_hold_dispute'
   else coalesce((
    select case p.status when 'paid' then 'paid' when 'processing' then 'processing'
@@ -32,7 +32,7 @@ begin
    or (
     exists(select 1 from public.orders o join public.transaction_disputes td on td.order_id=o.id
      where o.checkout_id=d.checkout_id and o.vendor_id=d.vendor_id
-      and td.status in ('open','under_review','escalated'))
+      and td.status in ('open','under_review','waiting_for_buyer','waiting_for_seller','escalated'))
     and not exists(select 1 from public.zune_driver_payment_records p
      where p.delivery_id=d.id and p.status='paid')
    )
@@ -111,7 +111,7 @@ begin
 
  if exists(select 1 from public.orders o join public.transaction_disputes td on td.order_id=o.id
   where o.checkout_id=v_checkout_id and o.vendor_id=v_vendor_id
-   and td.status in ('open','under_review','escalated')) then
+   and td.status in ('open','under_review','waiting_for_buyer','waiting_for_seller','escalated')) then
   raise exception 'Malipo ya dereva yamesimamishwa kwa sababu kuna mgogoro wa oda. Subiri Admin atatue mgogoro kwanza.';
  end if;
 
