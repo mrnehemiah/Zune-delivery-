@@ -17,7 +17,7 @@ begin
   when exists(
    select 1 from public.orders o join public.transaction_disputes td on td.order_id=o.id
    where o.checkout_id=d.checkout_id and o.vendor_id=d.vendor_id
-    and td.status in ('open','under_review','waiting_for_buyer','waiting_for_seller','escalated')
+    and td.status in ('open','under_review','escalated')
   ) then 'on_hold_dispute'
   else coalesce((
    select case p.status when 'paid' then 'paid' when 'processing' then 'processing'
@@ -32,7 +32,7 @@ begin
    or (
     exists(select 1 from public.orders o join public.transaction_disputes td on td.order_id=o.id
      where o.checkout_id=d.checkout_id and o.vendor_id=d.vendor_id
-      and td.status in ('open','under_review','waiting_for_buyer','waiting_for_seller','escalated'))
+      and td.status in ('open','under_review','escalated'))
     and not exists(select 1 from public.zune_driver_payment_records p
      where p.delivery_id=d.id and p.status='paid')
    )
@@ -111,7 +111,7 @@ begin
 
  if exists(select 1 from public.orders o join public.transaction_disputes td on td.order_id=o.id
   where o.checkout_id=v_checkout_id and o.vendor_id=v_vendor_id
-   and td.status in ('open','under_review','waiting_for_buyer','waiting_for_seller','escalated')) then
+   and td.status in ('open','under_review','escalated')) then
   raise exception 'Malipo ya dereva yamesimamishwa kwa sababu kuna mgogoro wa oda. Subiri Admin atatue mgogoro kwanza.';
  end if;
 
@@ -185,7 +185,7 @@ begin
  from public.order_deliveries d left join public.zune_driver_payment_records p on p.delivery_id=d.id
  where d.assigned_driver_id=v_uid and d.status='completed' and d.buyer_confirmed_at is not null
   and d.payout_status='on_hold_dispute' and coalesce(p.status,'pending')<>'paid';
- v_pending:=greatest(v_earned-v_paid,0);
+ v_pending:=greatest(v_earned-v_paid-v_on_hold_dispute,0);
 
  select coalesce(jsonb_agg(x.obj order by x.created_at desc),'[]'::jsonb) into v_payments
  from (
