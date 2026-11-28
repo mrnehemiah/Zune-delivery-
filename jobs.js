@@ -33,7 +33,7 @@ function card(d){
 }
 if(state==='ready_for_pickup')action='<button class="primary" data-pick="'+id+'">Nimethibitisha kupokea mzigo</button>';
  if(state==='picked_up')action='<button class="primary" data-transit="'+id+'">Anza safari</button>';
- if(state==='in_transit')action='<button class="primary" data-delivered="'+id+'">Nimemfikishia mnunuzi</button><button class="ghost" data-gps-toggle="'+id+'">'+(trackingDeliveryId===d.delivery_id?'Zima GPS':'Washa live GPS')+'</button>';
+ if(state==='in_transit')action='<div class="jobs-proof-control"><label class="jobs-proof-label">Picha ya ushahidi wa kufikisha<input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" data-proof-file="'+id+'"><small>JPG, PNG au WEBP · hadi MB 8</small></label><button class="primary" data-delivered="'+id+'">Pakia ushahidi na thibitisha kufikisha</button></div><button class="ghost" data-gps-toggle="'+id+'">'+(trackingDeliveryId===d.delivery_id?'Zima GPS':'Washa live GPS')+'</button>';
  const itemRows=Array.isArray(d.delivery_items)?d.delivery_items:[];
  const itemsMarkup=itemRows.length
   ? '<section class="jobs-items"><div class="jobs-items-heading">BIDHAA ZA ODA <span>'+itemRows.length+'</span></div>'+itemRows.map(item=>'<div class="jobs-item-row"><div class="jobs-item-copy"><b>'+esc(item.product_name||'Bidhaa')+'</b>'+(item.variant_label?'<small>Chaguo: '+esc(item.variant_label)+'</small>':'')+(item.variant_sku?'<small>SKU: '+esc(item.variant_sku)+'</small>':'')+'</div><strong>× '+esc(item.quantity||0)+'</strong></div>').join('')+'</section>'
@@ -54,8 +54,37 @@ function render(){
  root.querySelectorAll('[data-reject]').forEach(b=>b.onclick=async()=>{const reason=window.prompt('Eleza sababu ya kukataa oda hii (angalau herufi 3):');if(reason===null)return;if(reason.trim().length<3){msg('Sababu ni fupi sana.',true);return;}b.disabled=true;const {data,error}=await db.rpc('zune_delivery_driver_reject',{p_delivery_id:b.dataset.reject,p_reason:reason.trim()});if(error){msg(error.message,true);b.disabled=false;return;}if(!data?.ok){msg(data?.message||'Muda wa kujibu umeisha.',true);}else msg('Umeikataa oda. Muuzaji amepokea taarifa na anaweza kuchagua dereva mwingine.');await load();});
  root.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_pickup',{p_delivery_id:b.dataset.pick,p_note:'Dereva amethibitisha kupokea mzigo.'},'Umethibitisha kupokea mzigo.'));
  root.querySelectorAll('[data-transit]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_in_transit',{p_delivery_id:b.dataset.transit},'Safari imeanza.'));
- root.querySelectorAll('[data-delivered]').forEach(b=>b.onclick=()=>act('zune_delivery_driver_delivered',{p_delivery_id:b.dataset.delivered,p_note:'Dereva amethibitisha kufikisha mzigo.'},'Umeweka mzigo kuwa umefikishwa. Mnunuzi sasa athibitishe kupokea.'));
+ root.querySelectorAll('[data-delivered]').forEach(b=>b.onclick=()=>deliverWithProof(b));
  root.querySelectorAll('[data-gps-toggle]').forEach(b=>b.onclick=()=>{const id=b.dataset.gpsToggle;if(trackingDeliveryId===id){stopGps();msg('Ufuatiliaji wa GPS umesimamishwa.');render();return;}startGps(id);});
+}
+async function deliverWithProof(button){
+ const id=button.dataset.delivered,card=button.closest('.jobs-card'),input=card?.querySelector('[data-proof-file]'),file=input?.files?.[0];
+ if(!file){msg('Piga picha au chagua picha ya ushahidi kwanza.',true);input?.focus();return;}
+ const allowed=['image/jpeg','image/png','image/webp'];
+ if(!allowed.includes(file.type)){msg('Tumia picha ya JPG, PNG au WEBP pekee.',true);return;}
+ if(file.size>8*1024*1024){msg('Picha imezidi MB 8. Chagua picha ndogo.',true);return;}
+ button.disabled=true;const oldText=button.textContent;button.textContent='Inapakia ushahidi...';
+ let uploadedPath=null;
+ try{
+  const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+  const token=globalThis.crypto?.randomUUID?.()||String(Date.now());
+  uploadedPath=id+'/'+token+'.'+ext;
+  const {error:uploadError}=await db.storage.from('zune-delivery-proofs').upload(uploadedPath,file,{contentType:file.type,cacheControl:'3600',upsert:false});
+  if(uploadError)throw uploadError;
+  const {data:proofData,error:proofError}=await db.rpc('zune_delivery_driver_submit_proof',{p_delivery_id:id,p_object_path:uploadedPath});
+  if(proofError)throw proofError;
+  if(!proofData?.ok)throw new Error('Mfumo haukuthibitisha kuhifadhi ushahidi.');
+  button.textContent='Inathibitisha kufikisha...';
+  const {data,error}=await db.rpc('zune_delivery_driver_delivered',{p_delivery_id:id,p_note:'Dereva amepakia picha ya ushahidi na kuthibitisha kufikisha mzigo.'});
+  if(error)throw error;
+  if(!data?.ok)throw new Error('Mfumo haukuthibitisha hatua ya kufikisha.');
+  if(trackingDeliveryId===id)stopGps();
+  msg('Ushahidi umehifadhiwa. Mnunuzi sasa anaweza kuangalia picha na kuthibitisha kupokea.');
+  await load();
+ }catch(error){
+  msg(error.message||'Imeshindikana kuhifadhi ushahidi wa delivery.',true);
+  if(uploadedPath){const {error:cleanupError}=await db.storage.from('zune-delivery-proofs').remove([uploadedPath]);if(cleanupError)console.warn('Proof cleanup:',cleanupError.message);}
+ }finally{button.disabled=false;button.textContent=oldText;}
 }
 async function act(fn,args,success){const {error}=await db.rpc(fn,args);if(error){msg(error.message,true);return;}if(fn==='zune_delivery_driver_delivered'&&trackingDeliveryId===args.p_delivery_id)stopGps();if(fn==='zune_delivery_driver_in_transit')startGps(args.p_delivery_id);msg(success);await load();}
 function startGps(id){if(!navigator.geolocation){msg('Kifaa hiki hakina GPS inayopatikana.',true);return;}stopGps();trackingDeliveryId=id;msg('Live GPS imewashwa. Eneo lako litasasishwa kila sekunde 20 wakati safari inaendelea na ukurasa uko wazi.');render();sendGps(id);gpsTimer=window.setInterval(()=>{if(!document.hidden&&trackingDeliveryId===id)sendGps(id);},20000);}
