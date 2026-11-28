@@ -73,6 +73,6 @@ The latest database audit reports 1 driver profile, 1 application, 6 document re
 ## Driver commission and dispute holds — Phase 4
 - Approved policy: automatic fixed 3% commission from gross driver payout; driver receives 97%.
 - The 3% commission is credited to Admin Wallet/financial ledger only after Admin confirms the payout as paid. Example: TSh 3,000 gross → TSh 90 commission → TSh 2,910 net.
-- Open, under-review, waiting-for-buyer, waiting-for-seller or escalated order disputes automatically set unpaid delivery payouts to `on_hold_dispute`. The Admin payout RPC refuses new or pending payouts until all related disputes are resolved or rejected.
-- The driver wallet shows the held amount separately. Admin sees a dispute-hold badge and cannot open the payout form while the delivery is held.
+- Open, under-review or escalated order disputes automatically set unpaid delivery payouts to `on_hold_dispute`. The Admin payout RPC refuses new or pending payouts until all related disputes are resolved or rejected.
+- The driver wallet shows the held amount separately; held funds are excluded from the ordinary pending total to avoid double-counting. Admin sees a dispute-hold badge and cannot open the payout form while the delivery is held.
 - Follow-on SQL source: `supabase-driver-payout-dispute-hold-3pct.sql`.
