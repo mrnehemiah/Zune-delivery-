@@ -62,3 +62,10 @@ The latest database audit reports 1 driver profile, 1 application, 6 document re
 - Vehicle-use authorization becomes required when the saved vehicle ownership is not `owned`.
 - Driver payout details are deliberately not collected during public signup. They should be added as a separate verified payout-method workflow after driver approval; never request a mobile-money PIN or OTP.
 - The database's existing five-document assignment gate remains unchanged. Bicycle applicants are shown an Admin-reviewable evidence prompt rather than having required document cards hidden from the UI.
+
+## Proof of Delivery (POD) — Phase 4
+- Applied migration: `phase4_delivery_proof_of_delivery_20261128` (plus the unlinked-upload cleanup policy).
+- The assigned driver must upload a JPG, PNG or WEBP photo (maximum 8 MB) while the delivery is `in_transit` before the database accepts the `delivered` transition.
+- Evidence is stored in the private `zune-delivery-proofs` bucket. The assigned driver, the buyer for that delivery and Admin are the only permitted viewers.
+- The buyer tracking page creates a short-lived signed URL to show the proof photo and keeps buyer receipt confirmation as a separate action.
+- Historical completed deliveries are not retroactively given proof photos; the new requirement applies to deliveries from this release onward.
